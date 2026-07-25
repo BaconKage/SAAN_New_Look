@@ -1,0 +1,54 @@
+{
+  "name": "saan-website",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SAAN Protocol Experts Private Limited — corporate website",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:a11y": "playwright test --project=accessibility",
+    "audit:content": "tsx scripts/audit-content.ts",
+    "validate:content": "tsx scripts/validate-content.ts",
+    "lhci": "lhci autorun",
+    "verify": "npm run lint && npm run typecheck && npm run validate:content && npm run test:unit && npm run build"
+  },
+  "dependencies": {
+    "next": "16.2.11",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "^4.4.3",
+    "lucide-react": "^1.26.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
+    "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.62.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "16.2.11",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.6",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.1",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.10"
+  }
+}

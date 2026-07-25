@@ -1,0 +1,263 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--color-ink-200);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    /* Focus targets must clear the sticky header — WCAG 2.2 Focus Not Obscured */
+    scroll-padding-top: calc(var(--header-height) + 1rem);
+    /* No `scroll-behavior: smooth` on the root. It animates *every*
+       programmatic scroll, including focus moves and the skip link, which
+       delays keyboard navigation and makes the focused element's position
+       ambiguous mid-animation. Smooth scrolling is applied per-interaction
+       where it genuinely helps instead. */
+  }
+
+  body {
+    background-color: var(--color-ink-0);
+    color: var(--color-ink-900);
+    font-family: var(--font-sans);
+    /* 17px body. The brief rejects tiny body text. */
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance;
+    font-weight: 600;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Data, specs and reference numbers align in columns. */
+  [data-numeric],
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Single, consistent focus treatment. `:focus-visible` only, so a mouse
+     click never shows a ring but every keyboard user always does. */
+  /* amber-600, not amber-500: WCAG 2.2 SC 1.4.11 requires 3:1 for a focus
+     indicator against the adjacent colour, and amber-500 on white is only
+     2.72:1. amber-600 on white is 3.83:1. Enforced by contrast.test.ts. */
+  :focus-visible {
+    outline: 2px solid var(--color-amber-600);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+
+  /* Dark surfaces need a ring that clears the background instead. */
+  .on-dark :focus-visible,
+  [data-surface='dark'] :focus-visible {
+    outline-color: var(--color-amber-400);
+  }
+
+  ::selection {
+    background-color: var(--color-amber-200);
+    color: var(--color-ink-900);
+  }
+
+  /* Fixed dimensions everywhere — the CLS budget is 0.1. */
+  img,
+  video,
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* ==========================================================================
+   Typography scale — fluid
+   ========================================================================== */
+
+@utility text-display-1 {
+  font-size: clamp(2.75rem, 1.6rem + 4.6vw, 5.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.032em;
+}
+
+@utility text-display-2 {
+  font-size: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+}
+
+@utility text-h1 {
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.024em;
+}
+
+@utility text-h2 {
+  font-size: clamp(1.625rem, 1.25rem + 1.5vw, 2.25rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+@utility text-h3 {
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  line-height: 1.25;
+  letter-spacing: -0.014em;
+}
+
+@utility text-h4 {
+  font-size: 1.125rem;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+@utility text-body-lg {
+  font-size: 1.1875rem;
+  line-height: 1.65;
+}
+
+@utility text-body {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+
+@utility text-body-sm {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+@utility text-label {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+/* Decorative section labels only. Permitted at 12px because the content is
+   always duplicated in the adjacent heading. */
+@utility text-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.3;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+
+@utility container-content {
+  width: 100%;
+  max-width: var(--layout-content);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@utility container-wide {
+  width: 100%;
+  max-width: var(--layout-wide);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@utility container-prose {
+  width: 100%;
+  max-width: var(--layout-prose);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* ==========================================================================
+   Motion
+   ========================================================================== */
+
+/**
+ * Scroll reveal.
+ *
+ * The hidden initial state is applied ONLY inside `motion-safe`. This is
+ * deliberate: the common bug in scroll-reveal implementations is that
+ * `opacity: 0` persists when animation is disabled, hiding content from
+ * anyone with reduced-motion enabled. Here, reduced motion means the content
+ * simply renders — it is never hidden waiting for an animation that will not
+ * run. Covered by src/tests/e2e/reveal.motion.spec.ts.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity var(--duration-slow) var(--ease-entrance),
+      transform var(--duration-slow) var(--ease-entrance);
+  }
+
+  [data-reveal][data-revealed='true'] {
+    opacity: 1;
+    transform: none;
+  }
+
+  [data-reveal-delay='1'] {
+    transition-delay: 60ms;
+  }
+  [data-reveal-delay='2'] {
+    transition-delay: 120ms;
+  }
+  [data-reveal-delay='3'] {
+    transition-delay: 180ms;
+  }
+  [data-reveal-delay='4'] {
+    transition-delay: 240ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   Development affordances
+   ========================================================================== */
+
+/**
+ * Unverified content markers are unmistakably provisional on screen so they
+ * can never be mistaken for finished copy during review.
+ */
+@utility content-required {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.125rem 0.5rem;
+  border: 1px dashed var(--color-amber-600);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-amber-50);
+  color: var(--color-amber-800);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  font-style: normal;
+}
