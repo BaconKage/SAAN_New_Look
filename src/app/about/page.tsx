@@ -1,10 +1,13 @@
 import { PageHeader } from '@/components/sections/page-header';
 import { ButtonLink } from '@/components/ui/button';
-import { ContentRequired } from '@/components/ui/content-required';
+import {
+  ContentRequired,
+  PreparingNote,
+} from '@/components/ui/content-required';
 import { Container, Section, SectionHeader } from '@/components/ui/section';
 import { siteConfig } from '@/config/site';
 import { content } from '@/content/source';
-import { hasValue } from '@/lib/content-required';
+import { hasValue, isPublic } from '@/lib/content-required';
 import { buildMetadata } from '@/lib/metadata';
 
 export const metadata = buildMetadata({
@@ -23,7 +26,7 @@ export default async function AboutPage() {
       <PageHeader
         eyebrow="About"
         title="An engineering business that happens to work in AV"
-        lead="We design, integrate and support professional audio-visual systems for organisations where the room has to work — not occasionally, but every time someone walks into it."
+        lead="We design, integrate and support professional audio-visual systems for organisations where the room has to work â€” not occasionally, but every time someone walks into it."
         trail={[{ label: 'About', href: '/about' }]}
       />
 
@@ -34,15 +37,14 @@ export default async function AboutPage() {
 
             <p className="text-body-lg mt-6 text-ink-700">
               {hasValue(founded) ? (
-                <>SAAN was founded in {founded.value} in Bengaluru.</>
-              ) : (
-                <ContentRequired what="Confirmed founding year" />
-              )}{' '}
+                <>SAAN has operated from Bengaluru since {founded.value}. </>
+              ) : null}
               Our roots in test, measurement, enterprise IT and electronic
               technologies created the engineering discipline that now informs
               how we design, integrate, commission and support professional AV
               systems.
             </p>
+            <ContentRequired className="mt-4" what="Confirmed founding year" />
 
             <p className="text-body mt-6 text-ink-600">
               That background shows up in unglamorous ways. We document before
@@ -112,17 +114,28 @@ export default async function AboutPage() {
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
             <div>
               <SectionHeader
-                eyebrow="Leadership"
-                title="The people behind the work"
+                eyebrow="How we are set up"
+                title="Engineering-led, deliberately small at the top"
               />
-              <div className="mt-8">
-                <ContentRequired what="Leadership names, roles and photographs" />
-              </div>
-              <p className="text-body-sm mt-5 max-w-md text-ink-500">
-                We will publish the team once SAAN has supplied names, roles and
-                photographs. We would rather leave this section visibly empty
-                than fill it with stock imagery.
+              <p className="text-body mt-6 text-ink-600">
+                The people who survey your site are the people who design the
+                system and who you will speak to during commissioning. Projects
+                are not handed between a sales team and a delivery team that
+                have never met each other.
               </p>
+              <p className="text-body mt-5 text-ink-600">
+                That has a practical consequence: we take on work we can staff
+                properly. If a programme needs more capacity than we can commit,
+                we will say so at the requirement stage rather than at
+                installation.
+              </p>
+              <PreparingNote className="mt-7">
+                Team profiles are being prepared for publication.
+              </PreparingNote>
+              <ContentRequired
+                className="mt-5"
+                what="Leadership names, roles and photographs"
+              />
             </div>
 
             <div>
@@ -145,19 +158,28 @@ export default async function AboutPage() {
                     {siteConfig.address.postalCode}
                   </dd>
                 </div>
-                <div className="flex flex-wrap gap-x-3 border-b border-ink-100 pb-4">
-                  <dt className="w-36 shrink-0 text-ink-500">CIN</dt>
-                  <dd>
-                    <ContentRequired what="Company CIN" />
-                  </dd>
-                </div>
-                <div className="flex flex-wrap gap-x-3">
-                  <dt className="w-36 shrink-0 text-ink-500">GSTIN</dt>
-                  <dd>
-                    <ContentRequired what="Company GSTIN" />
-                  </dd>
-                </div>
+                {isPublic(siteConfig.registration.cin) ? (
+                  <div className="flex flex-wrap gap-x-3 border-b border-ink-100 pb-4">
+                    <dt className="w-36 shrink-0 text-ink-500">CIN</dt>
+                    <dd className="text-ink-900" data-numeric>
+                      {siteConfig.registration.cin.value}
+                    </dd>
+                  </div>
+                ) : null}
+                {isPublic(siteConfig.registration.gstin) ? (
+                  <div className="flex flex-wrap gap-x-3">
+                    <dt className="w-36 shrink-0 text-ink-500">GSTIN</dt>
+                    <dd className="text-ink-900" data-numeric>
+                      {siteConfig.registration.gstin.value}
+                    </dd>
+                  </div>
+                ) : null}
               </dl>
+
+              <div className="mt-5 flex flex-col items-start gap-2 empty:hidden">
+                <ContentRequired what="Company CIN" />
+                <ContentRequired what="Company GSTIN" />
+              </div>
             </div>
           </div>
 

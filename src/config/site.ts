@@ -114,14 +114,16 @@ export const siteConfig: SiteConfig = {
   },
 
   contact: {
+    // Retained for the record from the current public website, but NOT
+    // published: `isPublic()` requires a verified value, so these two numbers
+    // are invisible to visitors until SAAN confirms them. The client has
+    // asked that only the number below be shown.
     mainPhone: provisional('+918023182011', LEGACY_SITE_NOTE),
-
-    // Confirmed by the client as the main sales and WhatsApp contact.
-    salesPhone: verified('+919342659932', 'Main sales contact.'),
-
     supportPhone: provisional('+918867138111', LEGACY_SITE_NOTE),
 
-    whatsapp: verified('+919342659932', 'Same number as sales.'),
+    // The single confirmed public contact — sales, support and WhatsApp.
+    salesPhone: verified('+919342659932', 'Main public contact.'),
+    whatsapp: verified('+919342659932', 'Same number as the main contact.'),
 
     // The current website publishes no email address anywhere and has no
     // contact form. Both addresses are genuinely unknown.

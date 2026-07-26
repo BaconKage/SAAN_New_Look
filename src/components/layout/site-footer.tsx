@@ -10,15 +10,16 @@ import {
   whatsappHref,
 } from '@/config/site';
 import { content } from '@/content/source';
-import { hasValue, type SiteValue } from '@/lib/content-required';
+import { hasValue, isPublic, type SiteValue } from '@/lib/content-required';
 import { currentYear } from '@/lib/utils';
 
 /**
  * Site footer.
  *
- * Every contact detail is read from `siteConfig`. Values SAAN has not supplied
- * render a visible [CONTENT REQUIRED] marker rather than being omitted
- * silently, so a missing email address is impossible to overlook during review.
+ * Every contact detail is read from `siteConfig`, and only *verified* values
+ * are rendered. Unconfirmed values — including the two telephone numbers
+ * carried across from the old website — are omitted entirely rather than shown
+ * as scaffolding. The gaps stay tracked by `audit:content`, not by the page.
  */
 
 function FooterHeading({ children }: { children: React.ReactNode }) {
@@ -42,7 +43,13 @@ function FooterLink({
   );
 }
 
-/** Renders a contact value, or its placeholder marker when not yet supplied. */
+/**
+ * Renders a contact value, or nothing at all when it is unconfirmed.
+ *
+ * The row disappears entirely rather than showing an empty label or a marker.
+ * In development audit mode (`SHOW_CONTENT_TODOS=true`) the marker is shown
+ * instead, so the gap stays visible to us without ever reaching a visitor.
+ */
 function ContactValue({
   field,
   what,
@@ -54,7 +61,7 @@ function ContactValue({
   href?: string;
   children?: React.ReactNode;
 }) {
-  if (!hasValue(field)) {
+  if (!isPublic(field)) {
     return <ContentRequired what={what} />;
   }
 
@@ -189,26 +196,45 @@ export async function SiteFooter() {
                   WhatsApp
                 </ContactValue>
               </li>
-              <li>
-                <ContactValue
-                  field={contact.salesEmail}
-                  what="Confirmed sales email"
-                />
-              </li>
-              <li>
-                <ContactValue
-                  field={contact.supportEmail}
-                  what="Confirmed support email"
-                />
-              </li>
-              <li className="pt-2">
-                <FooterHeading>Business hours</FooterHeading>
-                <ContactValue
-                  field={siteConfig.businessHours}
-                  what="Confirmed business hours"
-                />
-              </li>
+              {isPublic(contact.salesEmail) ? (
+                <li>
+                  <ContactValue
+                    field={contact.salesEmail}
+                    what="Confirmed sales email"
+                    href={`mailto:${contact.salesEmail.value}`}
+                  >
+                    {contact.salesEmail.value}
+                  </ContactValue>
+                </li>
+              ) : null}
+              {isPublic(contact.supportEmail) ? (
+                <li>
+                  <ContactValue
+                    field={contact.supportEmail}
+                    what="Confirmed support email"
+                    href={`mailto:${contact.supportEmail.value}`}
+                  >
+                    {contact.supportEmail.value}
+                  </ContactValue>
+                </li>
+              ) : null}
+              {isPublic(siteConfig.businessHours) ? (
+                <li className="pt-2">
+                  <FooterHeading>Business hours</FooterHeading>
+                  <span className="text-[0.9375rem] text-ink-300">
+                    {siteConfig.businessHours.value}
+                  </span>
+                </li>
+              ) : null}
             </ul>
+
+            {/* Audit-mode only: keeps the gaps visible to the team without
+                ever showing scaffolding to a visitor. */}
+            <div className="mt-4 flex flex-col gap-2 empty:hidden">
+              <ContentRequired what="Confirmed sales email" />
+              <ContentRequired what="Confirmed support email" />
+              <ContentRequired what="Confirmed business hours" />
+            </div>
 
             <ul className="mt-6 space-y-2">
               {footerNavigation.support.map((item) => (
@@ -225,12 +251,12 @@ export async function SiteFooter() {
             AA for body text. Caught by the axe sweep, not by the token test. */}
         <div className="mt-14 flex flex-col gap-4 border-t border-ink-800 pt-8 text-[0.875rem] text-ink-400 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            {/* Computed, never hard-coded — the previous site froze at 2020. */}
+            {/* Computed, never hard-coded â€” the previous site froze at 2020. */}
             &copy; {currentYear()} {siteConfig.legalName}
           </p>
 
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            {hasValue(registration.cin) ? (
+            {isPublic(registration.cin) ? (
               <span data-numeric>CIN {registration.cin.value}</span>
             ) : (
               <ContentRequired what="Company CIN" />

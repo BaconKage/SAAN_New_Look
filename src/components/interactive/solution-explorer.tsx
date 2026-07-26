@@ -22,6 +22,23 @@ import { cn } from '@/lib/utils';
  * `hidden`, so the content is in the HTML for crawlers and is available
  * immediately, with no request on selection.
  */
+/**
+ * Service slug to display label.
+ *
+ * Held here rather than passed down because the explorer is a client island —
+ * this keeps the server/client boundary to a single serialisable prop.
+ */
+const serviceLabels: Record<string, string> = {
+  'consultation-and-requirement-analysis': 'Consultation',
+  'site-survey-and-system-design': 'Site survey and system design',
+  'supply-and-installation': 'Supply and installation',
+  'integration-and-commissioning': 'Integration and commissioning',
+  'training-and-handover': 'Training and handover',
+  'amc-and-preventive-maintenance': 'AMC and preventive maintenance',
+  'technical-support': 'Technical support',
+  'upgrades-and-lifecycle-management': 'Upgrades and lifecycle management',
+};
+
 export function SolutionExplorer({ options }: { options: ExplorerOption[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -153,18 +170,38 @@ export function SolutionExplorer({ options }: { options: ExplorerOption[] }) {
               </div>
 
               <div>
-                <h3 className="text-eyebrow text-ink-500">Where it applies</h3>
-                <ul className="mt-4 flex flex-wrap gap-2">
-                  {option.environments.map((environment) => (
+                <h3 className="text-eyebrow text-ink-500">
+                  What SAAN would evaluate
+                </h3>
+                <ul className="mt-4 space-y-3">
+                  {option.evaluates.map((item) => (
                     <li
-                      key={environment}
-                      className="rounded-full border border-ink-200 bg-ink-0 px-3 py-1 text-[0.8125rem] text-ink-600"
+                      key={item}
+                      className="flex gap-2.5 text-[0.9375rem] leading-relaxed text-ink-600"
                     >
-                      {environment}
+                      <span
+                        aria-hidden="true"
+                        className="mt-[0.6em] h-px w-3 shrink-0 bg-signal-500/60"
+                      />
+                      {item}
                     </li>
                   ))}
                 </ul>
               </div>
+            </div>
+
+            <div className="mt-8 border-t border-ink-200 pt-8">
+              <h3 className="text-eyebrow text-ink-500">Where it applies</h3>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {option.environments.map((environment) => (
+                  <li
+                    key={environment}
+                    className="rounded-full border border-ink-200 bg-ink-0 px-3 py-1 text-[0.8125rem] text-ink-600"
+                  >
+                    {environment}
+                  </li>
+                ))}
+              </ul>
             </div>
 
             <div className="mt-8 border-t border-ink-200 pt-8">
@@ -195,6 +232,28 @@ export function SolutionExplorer({ options }: { options: ExplorerOption[] }) {
               </ul>
             </div>
 
+            <div className="mt-8 border-t border-ink-200 pt-8">
+              <h3 className="text-eyebrow text-ink-500">
+                Services usually involved
+              </h3>
+              <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+                {option.relatedServices.map((slug) => {
+                  const service = serviceLabels[slug];
+                  if (service === undefined) return null;
+                  return (
+                    <li key={slug}>
+                      <Link
+                        href={`/services/${slug}`}
+                        className="text-[0.9375rem] text-ink-700 underline decoration-ink-300 underline-offset-4 transition-colors hover:text-amber-700 hover:decoration-amber-500"
+                      >
+                        {service}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
             <div className="mt-8 flex flex-wrap items-center gap-4 border-t border-ink-200 pt-6">
               <ButtonLink href="/plan-your-project" variant="primary">
                 Discuss this requirement
@@ -214,8 +273,10 @@ export function SolutionExplorer({ options }: { options: ExplorerOption[] }) {
             </div>
 
             <p className="mt-6 text-[0.875rem] leading-relaxed text-ink-500">
-              This is a starting point, not a final design. Every system we
-              deliver is specified after a site assessment.
+              Every room is different. SAAN studies the space, user workflow,
+              platform requirements, acoustics, lighting, network readiness and
+              long-term support needs before recommending a final system — so
+              this is a starting point for a conversation, not a specification.
             </p>
           </div>
         ))}

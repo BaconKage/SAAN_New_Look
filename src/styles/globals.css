@@ -224,6 +224,29 @@
   }
 }
 
+/**
+ * Signal-path trace on system diagrams.
+ *
+ * The one piece of motion on the site that carries information a static image
+ * cannot: it shows which way the signal travels. Under reduced motion the path
+ * renders as a solid line and nothing is lost.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .diagram-pulse {
+    stroke-dasharray: 6 54;
+    animation: diagram-trace 3.2s linear infinite;
+  }
+}
+
+@keyframes diagram-trace {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

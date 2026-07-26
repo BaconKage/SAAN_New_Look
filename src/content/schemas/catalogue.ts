@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import {
+  faqSchema,
   iconKeySchema,
   imageSchema,
   pointSchema,
@@ -60,6 +61,20 @@ export const serviceSummarySchema = z.object({
   icon: iconKeySchema,
   /** What the customer actually receives. Concrete deliverables only. */
   deliverables: z.array(z.string().min(1)).min(2),
+  /**
+   * Why these deliverables matter, in this stage's own terms.
+   * Exists because a single shared paragraph appeared on all eight service
+   * pages — see docs/CONTENT_REPETITION_AUDIT.md.
+   */
+  deliverableNote: z.string().min(1),
+  /** How this stage relates to the rest of the sequence. Stage-specific. */
+  positionNote: z.string().min(1),
+  /** Who from SAAN and from your side is involved at this stage. */
+  whoIsInvolved: z.string().min(1),
+  /** Indicative duration. Never a commitment — always framed as typical. */
+  typicalDuration: z.string().min(1),
+  /** What the customer can do to make this stage go well. */
+  whatHelps: z.array(z.string().min(1)).min(2),
   seo: seoSchema,
   order: z.number().int().nonnegative(),
 });
@@ -96,12 +111,106 @@ export const explorerOptionSchema = z.object({
   /** Solution page this requirement maps to. */
   solutionSlug: slugSchema,
   challenges: z.array(z.string().min(1)).min(3),
+  /** What SAAN would assess for this requirement, before specifying. */
+  evaluates: z.array(z.string().min(1)).min(3),
   capabilities: z.array(pointSchema).min(3),
   environments: z.array(z.string().min(1)).min(3),
+  /** Delivery services this requirement typically involves. */
+  relatedServices: z.array(slugSchema).min(2),
+});
+
+/* -------------------------------------------------------------------------- */
+/*                             Solution detail                                */
+/* -------------------------------------------------------------------------- */
+
+export const diagramNodeSchema = z.object({
+  id: z.string().min(1),
+  label: z.string().min(1),
+  kind: z.enum([
+    'display',
+    'camera',
+    'microphone',
+    'speaker',
+    'control',
+    'player',
+    'network',
+    'cloud',
+    'source',
+  ]),
+  x: z.number().min(0).max(100),
+  y: z.number().min(0).max(100),
+});
+
+export const diagramLinkSchema = z.object({
+  from: z.string().min(1),
+  to: z.string().min(1),
+  type: z.enum(['signal', 'data']).optional(),
+});
+
+export const systemDiagramSchema = z.object({
+  nodes: z.array(diagramNodeSchema).min(3),
+  links: z.array(diagramLinkSchema).min(2),
+  caption: z.string().min(1),
+});
+
+/**
+ * The depth behind each solution page.
+ *
+ * Held separately from the summary because it is only needed on one route, and
+ * because every field here must be genuinely specific to its solution. The
+ * minimums are what stop a page from being padded out with a template.
+ *
+ * `deliveryNote` and `ctaHeadline` exist specifically to prevent the repeated
+ * closing paragraph and identical call to action that the Phase 3A content
+ * audit found across all eight pages.
+ */
+export const solutionDetailSchema = z.object({
+  slug: slugSchema,
+  /** Opening statement. Must differ from the summary used on cards. */
+  intro: z.string().min(1),
+  challenges: z.array(pointSchema).min(3),
+  /** What SAAN assesses before specifying anything. The credibility block. */
+  evaluates: z.array(pointSchema).min(4),
+  applications: z.array(pointSchema).min(3),
+  architecture: systemDiagramSchema,
+  /** Solution-specific delivery considerations, not the generic four stages. */
+  deliveryNote: z.string().min(1),
+  deliveryPoints: z.array(z.string().min(1)).min(3),
+  /** Lifecycle and support considerations specific to this technology. */
+  lifecycle: z.array(pointSchema).min(2),
+  faqs: z.array(faqSchema).min(3),
+  ctaHeadline: z.string().min(1),
+  ctaBody: z.string().min(1),
+});
+
+/**
+ * Depth content for the seven industry pages.
+ *
+ * Exists for the same reason as `solutionDetailSchema`: without it, every
+ * industry page rendered the same six solution cards and the same closing
+ * paragraph, which the Phase 3A repetition audit found on eight pages at once.
+ * `relevantSolutions` is a genuine subset per sector, not the full list.
+ */
+export const industryDetailSchema = z.object({
+  slug: slugSchema,
+  intro: z.string().min(1),
+  challenges: z.array(pointSchema).min(3),
+  /** Operational, not marketing. What changes for the organisation. */
+  benefits: z.array(pointSchema).min(3),
+  deliveryApproach: z.object({
+    summary: z.string().min(1),
+    considerations: z.array(z.string().min(1)).min(3),
+  }),
+  relevantSolutions: z.array(slugSchema).min(3),
+  ctaHeadline: z.string().min(1),
+  ctaBody: z.string().min(1),
 });
 
 export type ExplorerOption = z.infer<typeof explorerOptionSchema>;
+export type IndustryDetail = z.infer<typeof industryDetailSchema>;
 export type SolutionSummary = z.infer<typeof solutionSummarySchema>;
+export type SolutionDetail = z.infer<typeof solutionDetailSchema>;
+export type SystemDiagram = z.infer<typeof systemDiagramSchema>;
 export type IndustrySummary = z.infer<typeof industrySummarySchema>;
 export type ServiceSummary = z.infer<typeof serviceSummarySchema>;
 export type ProcessStage = z.infer<typeof processStageSchema>;

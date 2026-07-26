@@ -9,18 +9,22 @@
  */
 
 import { explorerOptions } from '../src/content/data/explorer';
+import { industryDetails } from '../src/content/data/industry-details';
 import { industries } from '../src/content/data/industries';
 import { partners, projects, resources } from '../src/content/data/proof';
 import { processStages, services } from '../src/content/data/services';
+import { solutionDetails } from '../src/content/data/solution-details';
 import { solutions } from '../src/content/data/solutions';
 import {
   explorerOptionSchema,
+  industryDetailSchema,
   industrySummarySchema,
   partnerSchema,
   processStageSchema,
   projectSummarySchema,
   resourceSummarySchema,
   serviceSummarySchema,
+  solutionDetailSchema,
   solutionSummarySchema,
 } from '../src/content/schemas';
 
@@ -61,7 +65,9 @@ const bySlug = (record: unknown, index: number): string =>
     : `index ${index}`;
 
 validate('solutions', solutions, solutionSummarySchema, bySlug);
+validate('solution details', solutionDetails, solutionDetailSchema, bySlug);
 validate('industries', industries, industrySummarySchema, bySlug);
+validate('industry details', industryDetails, industryDetailSchema, bySlug);
 validate('services', services, serviceSummarySchema, bySlug);
 validate(
   'process stages',
@@ -89,6 +95,46 @@ validate('resources', resources, resourceSummarySchema, bySlug);
 
 const solutionSlugs = new Set(solutions.map((s) => s.slug));
 const industrySlugs = new Set(industries.map((i) => i.slug));
+const serviceSlugs = new Set(services.map((s) => s.slug));
+
+// Every solution page must have its depth content, and every diagram link must
+// reference nodes that exist — a broken link would silently vanish.
+for (const solution of solutions) {
+  const detail = solutionDetails.find((d) => d.slug === solution.slug);
+  if (detail === undefined) {
+    problems.push({
+      collection: 'solution details',
+      identifier: solution.slug,
+      message: 'No detail content: the solution page would render as a stub.',
+    });
+    continue;
+  }
+
+  const nodeIds = new Set(detail.architecture.nodes.map((node) => node.id));
+  for (const link of detail.architecture.links) {
+    for (const end of [link.from, link.to]) {
+      if (!nodeIds.has(end)) {
+        problems.push({
+          collection: 'solution details',
+          identifier: detail.slug,
+          message: `Architecture link references unknown node "${end}".`,
+        });
+      }
+    }
+  }
+}
+
+for (const option of explorerOptions) {
+  for (const slug of option.relatedServices) {
+    if (!serviceSlugs.has(slug)) {
+      problems.push({
+        collection: 'explorer options',
+        identifier: option.id,
+        message: `References unknown service "${slug}".`,
+      });
+    }
+  }
+}
 
 for (const option of explorerOptions) {
   if (!solutionSlugs.has(option.solutionSlug)) {

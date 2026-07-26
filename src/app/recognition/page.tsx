@@ -1,6 +1,9 @@
 import { PageHeader } from '@/components/sections/page-header';
 import { ButtonLink } from '@/components/ui/button';
-import { ContentRequiredBlock } from '@/components/ui/content-required';
+import {
+  ContentRequiredBlock,
+  PreparingNote,
+} from '@/components/ui/content-required';
 import { Container, Section } from '@/components/ui/section';
 import { buildMetadata } from '@/lib/metadata';
 
@@ -23,13 +26,20 @@ export default function RecognitionPage() {
 
       <Section>
         <Container>
-          <ContentRequiredBlock
-            what="Verified award information"
-            note="Several partner-programme awards and recognitions appear on SAAN's current website, dated between 2014 and 2019. Each needs re-verification and a certificate scan before it is republished, and any award tied to a relationship that has since lapsed will be presented as historical rather than current. Nothing is carried across on the strength of the old page alone."
-          />
+          <div className="max-w-2xl">
+            <h2 className="text-h2">
+              Credentials are being verified for publication
+            </h2>
+            <p className="text-body mt-6 text-ink-600">
+              SAAN holds partner-programme recognition from manufacturers in the
+              display, conferencing and audio categories. Rather than reprint
+              what an older website claimed, we are checking each one against
+              its certificate and its current status before it appears here — an
+              award tied to a relationship that has since lapsed will be
+              presented as historical, not as current standing.
+            </p>
 
-          <div className="mt-12 max-w-2xl">
-            <h2 className="text-h3">What we will publish here</h2>
+            <h3 className="text-h3 mt-14">What we will publish</h3>
             <ul className="mt-6 space-y-3">
               {[
                 'Manufacturer partner-programme recognition, with the year and the awarding organisation',
@@ -56,14 +66,25 @@ export default function RecognitionPage() {
               claim on a web page will not either.
             </p>
 
+            <PreparingNote className="mt-8">
+              If you need our credentials for a tender or a vendor-registration
+              process, ask and we will send the current documentation directly.
+            </PreparingNote>
+
             <div className="mt-10 flex flex-wrap gap-3">
-              <ButtonLink href="/about" variant="primary">
-                About SAAN
-              </ButtonLink>
-              <ButtonLink href="/contact" variant="secondary">
+              <ButtonLink href="/contact" variant="primary">
                 Request our credentials
               </ButtonLink>
+              <ButtonLink href="/about" variant="secondary">
+                About SAAN
+              </ButtonLink>
             </div>
+
+            <ContentRequiredBlock
+              className="mt-12"
+              what="Verified award information"
+              note="Partner-programme awards dated 2014-2019 appear on the current website. Each needs re-verification and a certificate scan before republishing."
+            />
           </div>
         </Container>
       </Section>

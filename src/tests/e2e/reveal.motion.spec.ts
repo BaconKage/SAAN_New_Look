@@ -32,7 +32,7 @@ test('content inside reveal wrappers is visible with reduced motion', async ({
   }
 });
 
-test('all eight solution cards are readable without scrolling triggers', async ({
+test('all eight solutions are reachable without scrolling triggers', async ({
   page,
 }) => {
   await page.goto('/');
@@ -41,13 +41,14 @@ test('all eight solution cards are readable without scrolling triggers', async (
     has: page.locator('#solutions-heading'),
   });
 
-  // Without waiting for any scroll or animation, every card heading must
-  // already be present and visible.
-  const headings = section.getByRole('heading', { level: 3 });
-  await expect(headings).toHaveCount(8);
+  // Without waiting for any scroll or animation, every solution link must
+  // already be present and visible. Two are feature panels with an h3; the
+  // remaining six are index rows.
+  const links = section.locator('a[href^="/solutions/"]');
+  await expect(links).toHaveCount(8);
 
   for (let index = 0; index < 8; index += 1) {
-    await expect(headings.nth(index)).toBeVisible();
+    await expect(links.nth(index)).toBeVisible();
   }
 });
 

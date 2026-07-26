@@ -48,7 +48,7 @@ The most urgent gap: **the current website publishes no email address at all, an
 
 | # | Item | Status |
 |---|---|---|
-| 3.1 | **Logo in vector format** (SVG / AI / EPS). Only a 610×78 PNG exists. | OPEN 🔴 |
+| 3.1 | **Logo in vector format** (SVG / AI / EPS). Only a 610×78 PNG exists, and it contains a typo. The site currently renders a clean type-based wordmark via a single component (`src/components/layout/logo.tsx`) so the asset can be swapped in one place. | OPEN 🔴 |
 | 3.2 | Logo variants: full colour, single-colour, reversed-for-dark, favicon/mark-only, square social avatar | OPEN 🔴 |
 | 3.3 | Correct the "Alig**ini**ng" typo in the logo wordmark | OPEN 🟠 |
 | 3.4 | Confirm brand amber. Sampled from the logo as `#E38700`; supply the official value if one is specified. | OPEN 🟠 |

@@ -214,6 +214,8 @@ Modifying the existing WordPress site · migrating its database · DNS or email 
 | `IMAGE_REQUIREMENTS.md` | Every image slot, with a shot list for SAAN |
 | `REDIRECT_PLAN.md` | Legacy → new mapping for all 27 URLs |
 | `SEO_PLAN.md` | Metadata, structured data, migration verification |
+| `VISUAL_REVIEW.md` | Phase 3A rendered review, page by page |
+| `CONTENT_REPETITION_AUDIT.md` | Repeated copy found and removed |
 | `DEPLOYMENT_PLAN.md` | Environments, CI/CD, secrets |
 | `DOMAIN_CUTOVER_CHECKLIST.md` | The DNS switch, step by step |
 | `ROLLBACK_PLAN.md` | Restoring the previous site |

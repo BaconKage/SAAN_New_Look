@@ -26,12 +26,24 @@ export default function PrivacyPage() {
       <Section>
         <Container width="prose" className="!px-0">
           <div className="container-prose">
+            <p className="text-body-lg text-ink-700">
+              This policy is being finalised and will be published before any
+              form on this website collects personal information. Until then,
+              the site does not collect or store personal data.
+            </p>
+
+            <p className="text-body mt-6 text-ink-600">
+              If you contact us by telephone or WhatsApp in the meantime, we use
+              your details only to respond to your enquiry.
+            </p>
+
             <ContentRequiredBlock
+              className="mt-10"
               what="Approved privacy policy text"
-              note="This policy must be drafted and approved by SAAN before any form on the site collects personal data. It needs to cover what is collected, why, how long it is retained, which third parties process it (email delivery, hosting and analytics), and the contact route for data-access and deletion requests under the Digital Personal Data Protection Act. The page is set to noindex until the approved text is in place."
+              note="Must be drafted and approved before any form collects personal data. Needs to cover what is collected, why, retention, third-party processors (email delivery, hosting, analytics) and the contact route for data-access and deletion requests under the DPDP Act."
             />
 
-            <h2 className="text-h3 mt-14">What this policy must cover</h2>
+            <h2 className="text-h3 mt-14">What this policy will cover</h2>
             <ul className="mt-6 space-y-3">
               {[
                 'The information collected through the project enquiry and support forms',

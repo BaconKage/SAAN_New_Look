@@ -21,6 +21,19 @@ export const services: ServiceSummary[] = [
       'Usage and platform assessment',
       'Indicative approach and options',
     ],
+    deliverableNote:
+      'A written requirement is what stops a project drifting. Both sides can point at the same document when a question comes up six weeks later.',
+    positionNote:
+      'Everything downstream is measured against what is agreed here, so it is worth spending time on.',
+    whoIsInvolved:
+      'A SAAN systems designer, with whoever owns the space and, where relevant, someone from IT.',
+    typicalDuration:
+      'Typically one or two conversations plus a short written summary.',
+    whatHelps: [
+      'Bring anyone who will actually use the room',
+      'Say what has failed before, honestly',
+      'Share floor plans if you have them',
+    ],
     seo: {
       metaTitle: 'AV Consultation and Requirement Analysis | SAAN',
       metaDescription:
@@ -40,6 +53,19 @@ export const services: ServiceSummary[] = [
       'Site survey report',
       'System schematic and rack elevation',
       'Cable schedule and containment requirements',
+    ],
+    deliverableNote:
+      'A design that can be built as drawn is the difference between an installation week that runs to plan and one spent improvising.',
+    positionNote:
+      'This is where most avoidable cost is either created or eliminated.',
+    whoIsInvolved:
+      'A SAAN engineer on site, coordinating with your facilities, IT and — on new build — the project team.',
+    typicalDuration:
+      'A half-day survey per space is common; design documentation follows.',
+    whatHelps: [
+      'Arrange access to ceilings, risers and plant rooms',
+      'Put us in touch with the electrical contractor early',
+      'Confirm which platforms you have standardised on',
     ],
     seo: {
       metaTitle: 'AV Site Survey and System Design Services | SAAN',
@@ -61,6 +87,19 @@ export const services: ServiceSummary[] = [
       'Installed and dressed racks',
       'Labelled, terminated and tested cabling',
     ],
+    deliverableNote:
+      'Finish quality is what people notice for years afterwards — dressed racks, concealed cable and clean making-good.',
+    positionNote:
+      'We coordinate with the other trades on site rather than arriving after them and working around whatever we find.',
+    whoIsInvolved:
+      'SAAN installation engineers, coordinating with electrical, ceiling and joinery trades on site.',
+    typicalDuration:
+      'Depends on room count and site access; agreed as a programme before we start.',
+    whatHelps: [
+      'Confirm the room is clear and power is available',
+      'Agree working hours and access routes in advance',
+      'Nominate one site contact for decisions',
+    ],
     seo: {
       metaTitle: 'AV Equipment Supply and Installation | SAAN',
       metaDescription:
@@ -80,6 +119,19 @@ export const services: ServiceSummary[] = [
       'Completed commissioning test record',
       'Configured control and platform integration',
       'As-built documentation',
+    ],
+    deliverableNote:
+      'A completed test record means acceptance is a decision based on evidence rather than on a demonstration that went well.',
+    positionNote:
+      'Nothing is handed over until it has passed the plan agreed at design stage.',
+    whoIsInvolved:
+      'A SAAN commissioning engineer, with your IT team for network and platform access.',
+    typicalDuration:
+      'Usually a day per room, longer where control programming is involved.',
+    whatHelps: [
+      'Have platform accounts and licences ready',
+      'Agree firewall rules ahead of the visit',
+      'Make the room available uninterrupted',
     ],
     seo: {
       metaTitle: 'AV Integration and Commissioning Services | SAAN',
@@ -101,6 +153,19 @@ export const services: ServiceSummary[] = [
       'Plain-language operating guide',
       'Handover pack with warranties and contacts',
     ],
+    deliverableNote:
+      'Documentation written for the people who will use the room, not for the engineer who built it, is what keeps a system in use.',
+    positionNote:
+      'Confidence at handover is the single best predictor of whether a room is still being used a year later.',
+    whoIsInvolved:
+      'A SAAN engineer who worked on your system, with your users and whoever will administer it.',
+    typicalDuration:
+      'A short session per room, plus a longer administrator session.',
+    whatHelps: [
+      'Schedule training when the actual users can attend',
+      'Nominate one or two internal champions',
+      'Tell us who inherits the system if staff change',
+    ],
     seo: {
       metaTitle: 'AV System Training and Handover | SAAN',
       metaDescription:
@@ -120,6 +185,19 @@ export const services: ServiceSummary[] = [
       'Scheduled preventive maintenance visits',
       'Visit reports with findings and actions',
       'Consumable and spare-part planning',
+    ],
+    deliverableNote:
+      'A visit report tells you what was found and what was done, so maintenance is something you can audit rather than assume.',
+    positionNote:
+      'Scheduled attention is what turns an unpredictable estate into a budgeted one.',
+    whoIsInvolved:
+      'A SAAN service engineer, working to a schedule agreed with your facilities team.',
+    typicalDuration:
+      'Visit frequency is set against room criticality, not a fixed calendar.',
+    whatHelps: [
+      'Tell us which rooms matter most',
+      'Give us a predictable access window',
+      'Report intermittent faults even if they clear',
     ],
     seo: {
       metaTitle: 'AV AMC and Preventive Maintenance Services | SAAN',
@@ -141,6 +219,19 @@ export const services: ServiceSummary[] = [
       'Remote diagnosis and resolution where possible',
       'On-site attendance when required',
     ],
+    deliverableNote:
+      'A reference number means a fault is tracked rather than depending on whoever happened to answer the phone.',
+    positionNote:
+      'We support systems we did not install, once we have documented what is there.',
+    whoIsInvolved:
+      'The SAAN support desk first, escalating to an engineer familiar with your installation.',
+    typicalDuration:
+      'Remote diagnosis is attempted first; on-site attendance is arranged where needed.',
+    whatHelps: [
+      'Describe what is on screen, not just that it is broken',
+      'Send a photograph of the room and the rack',
+      'Tell us what changed recently',
+    ],
     seo: {
       metaTitle: 'AV Technical Support Services | SAAN',
       metaDescription:
@@ -160,6 +251,19 @@ export const services: ServiceSummary[] = [
       'Installed estate assessment',
       'Staged upgrade and refresh plan',
       'Reuse and disposal recommendations',
+    ],
+    deliverableNote:
+      'An honest assessment usually finds that some of the estate is fine. Replacing only what needs replacing is where the budget goes furthest.',
+    positionNote:
+      'Knowing what is approaching end of support turns replacement into a planned line rather than an emergency.',
+    whoIsInvolved:
+      'A SAAN systems designer, working with whoever holds the budget and the estate records.',
+    typicalDuration:
+      'An estate assessment first; the upgrade programme is staged from what it finds.',
+    whatHelps: [
+      'Share whatever documentation exists, however incomplete',
+      'Tell us your budget cycle',
+      'Identify rooms you already know are failing',
     ],
     seo: {
       metaTitle: 'AV Upgrades and Lifecycle Management | SAAN',

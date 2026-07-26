@@ -10,7 +10,7 @@ import {
   telHref,
   whatsappHref,
 } from '@/config/site';
-import { hasValue, type SiteValue } from '@/lib/content-required';
+import { hasValue, isPublic, type SiteValue } from '@/lib/content-required';
 import { buildMetadata } from '@/lib/metadata';
 
 export const metadata = buildMetadata({
@@ -20,22 +20,26 @@ export const metadata = buildMetadata({
   path: '/contact',
 });
 
+/**
+ * A contact row. Renders nothing at all unless the value is verified, so an
+ * unconfirmed number or a missing email never appears as an empty labelled row.
+ */
 function ContactRow({
   icon,
   label,
   field,
-  what,
   href,
   display,
+  detail,
 }: {
   icon: React.ReactNode;
   label: string;
   field: SiteValue;
-  what: string;
-  href?: string;
-  display?: string;
+  href: string;
+  display: string;
+  detail?: string;
 }) {
-  const available = hasValue(field);
+  if (!isPublic(field)) return null;
 
   return (
     <div className="flex gap-4 border-b border-ink-100 py-5 last:border-0">
@@ -45,24 +49,16 @@ function ContactRow({
       <div className="min-w-0">
         <p className="text-eyebrow text-ink-500">{label}</p>
         <div className="mt-2">
-          {available && href !== undefined ? (
-            <a
-              href={href}
-              className="text-[1.0625rem] font-medium text-ink-900 underline-offset-4 hover:underline"
-              data-numeric
-            >
-              {display}
-            </a>
-          ) : available ? (
-            <span className="text-[1.0625rem] text-ink-900">{display}</span>
-          ) : (
-            <ContentRequired what={what} />
-          )}
+          <a
+            href={href}
+            className="text-[1.0625rem] font-medium text-ink-900 underline-offset-4 hover:underline"
+            data-numeric
+          >
+            {display}
+          </a>
         </div>
-        {field.note !== undefined && field.verified === false ? (
-          <p className="mt-2 text-[0.8125rem] text-ink-500">
-            Awaiting confirmation from SAAN.
-          </p>
+        {detail ? (
+          <p className="mt-1.5 text-[0.875rem] text-ink-500">{detail}</p>
         ) : null}
       </div>
     </div>
@@ -73,10 +69,6 @@ export default function ContactPage() {
   const { contact, address } = siteConfig;
   const salesValue = hasValue(contact.salesPhone)
     ? contact.salesPhone.value
-    : '';
-  const mainValue = hasValue(contact.mainPhone) ? contact.mainPhone.value : '';
-  const supportValue = hasValue(contact.supportPhone)
-    ? contact.supportPhone.value
     : '';
 
   return (
@@ -104,11 +96,11 @@ export default function ContactPage() {
                       aria-hidden="true"
                     />
                   }
-                  label="Sales and new projects"
+                  label="Call us"
                   field={contact.salesPhone}
-                  what="Confirmed sales telephone"
                   href={telHref(salesValue)}
                   display={formatPhoneForDisplay(salesValue)}
+                  detail="New projects and support for installed systems."
                 />
                 <ContactRow
                   icon={
@@ -121,42 +113,12 @@ export default function ContactPage() {
                   }
                   label="WhatsApp"
                   field={contact.whatsapp}
-                  what="Confirmed WhatsApp number"
                   href={whatsappHref(
                     salesValue,
                     'Hello SAAN, I would like to discuss an AV project.'
                   )}
                   display={formatPhoneForDisplay(salesValue)}
-                />
-                <ContactRow
-                  icon={
-                    <Phone
-                      width={17}
-                      height={17}
-                      strokeWidth={1.75}
-                      aria-hidden="true"
-                    />
-                  }
-                  label="Main line"
-                  field={contact.mainPhone}
-                  what="Confirmed main telephone"
-                  href={telHref(mainValue)}
-                  display={formatPhoneForDisplay(mainValue)}
-                />
-                <ContactRow
-                  icon={
-                    <Phone
-                      width={17}
-                      height={17}
-                      strokeWidth={1.75}
-                      aria-hidden="true"
-                    />
-                  }
-                  label="Technical support"
-                  field={contact.supportPhone}
-                  what="Confirmed support telephone"
-                  href={telHref(supportValue)}
-                  display={formatPhoneForDisplay(supportValue)}
+                  detail="Send photographs of the space and we can start from there."
                 />
                 <ContactRow
                   icon={
@@ -167,23 +129,35 @@ export default function ContactPage() {
                       aria-hidden="true"
                     />
                   }
-                  label="Sales email"
+                  label="Email"
                   field={contact.salesEmail}
-                  what="Confirmed sales email"
+                  href={`mailto:${contact.salesEmail.value ?? ''}`}
+                  display={contact.salesEmail.value ?? ''}
                 />
-                <ContactRow
-                  icon={
-                    <Mail
-                      width={17}
-                      height={17}
-                      strokeWidth={1.75}
-                      aria-hidden="true"
-                    />
-                  }
-                  label="Support email"
-                  field={contact.supportEmail}
-                  what="Confirmed support email"
-                />
+              </div>
+
+              {/* Audit mode only — never rendered for visitors. */}
+              <div className="mt-6 flex flex-col items-start gap-2 empty:hidden">
+                <ContentRequired what="Confirmed sales email" />
+                <ContentRequired what="Confirmed support email" />
+                <ContentRequired what="Confirmed main telephone" />
+                <ContentRequired what="Confirmed support telephone" />
+              </div>
+
+              <div className="mt-10 rounded-md border border-ink-200 bg-ink-25 p-6">
+                <h3 className="text-h4 font-semibold">
+                  Prefer to send the requirement in writing?
+                </h3>
+                <p className="text-body-sm mt-3 text-ink-600">
+                  The project form captures the room, the platforms you use and
+                  the timeline, so the first conversation starts from something
+                  concrete rather than from a blank page.
+                </p>
+                <div className="mt-5">
+                  <ButtonLink href="/plan-your-project" variant="secondary">
+                    Plan your project
+                  </ButtonLink>
+                </div>
               </div>
             </div>
 
@@ -212,12 +186,21 @@ export default function ContactPage() {
                   {address.region}, {address.country}
                 </address>
 
-                <h3 className="text-eyebrow mt-8 text-ink-500">
-                  Business hours
-                </h3>
-                <div className="mt-3">
-                  <ContentRequired what="Confirmed business hours" />
-                </div>
+                {isPublic(siteConfig.businessHours) ? (
+                  <>
+                    <h3 className="text-eyebrow mt-8 text-ink-500">
+                      Business hours
+                    </h3>
+                    <p className="mt-3 text-[0.9375rem] text-ink-700">
+                      {siteConfig.businessHours.value}
+                    </p>
+                  </>
+                ) : (
+                  <ContentRequired
+                    className="mt-8"
+                    what="Confirmed business hours"
+                  />
+                )}
               </div>
 
               <div className="mt-6 rounded-lg border border-ink-200 p-7">

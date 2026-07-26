@@ -1,6 +1,8 @@
 import type {
   IndustrySummary,
+  IndustryDetail,
   Partner,
+  SolutionDetail,
   ProcessStage,
   ProjectSummary,
   ResourceSummary,
@@ -28,9 +30,13 @@ export interface ContentSource {
 
   getSolutions(): Promise<SolutionSummary[]>;
   getSolution(slug: string): Promise<SolutionSummary | null>;
+  /** The depth content behind a solution page. Null while unwritten. */
+  getSolutionDetail(slug: string): Promise<SolutionDetail | null>;
 
   getIndustries(): Promise<IndustrySummary[]>;
   getIndustry(slug: string): Promise<IndustrySummary | null>;
+  /** The depth content behind an industry page. Null while unwritten. */
+  getIndustryDetail(slug: string): Promise<IndustryDetail | null>;
 
   getServices(): Promise<ServiceSummary[]>;
   getService(slug: string): Promise<ServiceSummary | null>;

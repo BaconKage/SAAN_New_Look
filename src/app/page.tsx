@@ -1,6 +1,7 @@
 import { Hero } from '@/components/sections/hero';
 import {
   DeliveryProcess,
+  EvaluationBand,
   ExplorerSection,
   FeaturedProjects,
   FinalCta,
@@ -34,13 +35,17 @@ export default async function HomePage() {
 
   return (
     <>
+      {/* Section order alternates surface and layout type — feature panels,
+          index list, interactive, index list, dark process band, split
+          support, statement — so no two consecutive sections read the same. */}
       <Hero />
       <SolutionsOverview solutions={solutions} />
+      <EvaluationBand />
       <ExplorerSection options={explorerOptions} />
       <IndustriesOverview industries={industries} />
       <DeliveryProcess stages={stages} />
       <FeaturedProjects projects={projects} />
-      <SupportLifecycle services={services} />
+      <SupportLifecycle services={services} hasProjects={projects.length > 0} />
       <PartnersSection hasPartners={partners.length > 0} />
       <FinalCta />
     </>

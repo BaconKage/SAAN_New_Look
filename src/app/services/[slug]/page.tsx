@@ -52,7 +52,20 @@ export default async function ServicePage({
 
   if (service === null) notFound();
 
-  const others = allServices.filter((entry) => entry.slug !== service.slug);
+  /**
+   * The stage before and after this one, rather than all seven others.
+   *
+   * Listing every service with its outcome line on every service page put the
+   * same eight sentences on seven pages. Adjacent stages are also more useful:
+   * they answer "what happens next?".
+   */
+  const position = allServices.findIndex(
+    (entry) => entry.slug === service.slug
+  );
+  const adjacent = [
+    allServices[position - 1],
+    allServices[position + 1],
+  ].filter((entry): entry is NonNullable<typeof entry> => entry !== undefined);
 
   return (
     <>
@@ -89,9 +102,7 @@ export default async function ServicePage({
               </ul>
 
               <p className="text-body mt-10 text-ink-600">
-                Each of these is something you can hold, review and hand to
-                somebody else. That matters most when the people who inherit the
-                system are not the people who bought it.
+                {service.deliverableNote}
               </p>
             </div>
 
@@ -102,11 +113,29 @@ export default async function ServicePage({
                 </span>
                 <h2 className="text-h4 mt-5 font-semibold">Where this fits</h2>
                 <p className="mt-3 text-[0.9375rem] leading-relaxed text-ink-600">
-                  This is stage {service.order} of our {allServices.length}
-                  -stage delivery process. We can pick it up at any point —
-                  including on systems somebody else installed.
+                  {service.positionNote}
                 </p>
-                <div className="mt-6">
+
+                <dl className="mt-7 space-y-5 border-t border-ink-200 pt-6">
+                  <div>
+                    <dt className="text-eyebrow text-ink-500">
+                      Who is involved
+                    </dt>
+                    <dd className="mt-2 text-[0.9375rem] leading-relaxed text-ink-700">
+                      {service.whoIsInvolved}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-eyebrow text-ink-500">
+                      Typical duration
+                    </dt>
+                    <dd className="mt-2 text-[0.9375rem] leading-relaxed text-ink-700">
+                      {service.typicalDuration}
+                    </dd>
+                  </div>
+                </dl>
+
+                <div className="mt-7">
                   <ButtonLink href="/plan-your-project" variant="primary">
                     Discuss your requirement
                   </ButtonLink>
@@ -114,46 +143,69 @@ export default async function ServicePage({
               </div>
             </div>
           </div>
+
+          <div className="mt-14 border-t border-ink-200 pt-10">
+            <h2 className="text-h3">What makes this stage go well</h2>
+            <ul className="mt-7 grid gap-x-10 gap-y-4 sm:grid-cols-3">
+              {service.whatHelps.map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-3 text-[0.9375rem] leading-relaxed text-ink-700"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="mt-[0.7em] h-px w-3 shrink-0 bg-amber-500"
+                  />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
         </Container>
       </Section>
 
       <Section surface="subtle">
         <Container>
           <SectionHeader
-            eyebrow="The rest of the process"
-            title="Everything else we handle"
+            eyebrow="Either side of this stage"
+            title="Where it sits in the sequence"
           />
-          <ul className="mt-12 grid gap-px overflow-hidden rounded-lg border border-ink-200 bg-ink-200 sm:grid-cols-2 lg:grid-cols-3">
-            {others.map((entry) => (
+          <ul className="mt-12 grid gap-px overflow-hidden rounded-lg border border-ink-200 bg-ink-200 sm:grid-cols-2">
+            {adjacent.map((entry) => (
               <li key={entry.slug} className="bg-ink-0">
                 <Link
                   href={`/services/${entry.slug}`}
-                  className="group flex h-full flex-col p-6 transition-colors duration-[220ms] hover:bg-ink-25"
+                  className="group flex h-full flex-col p-7 transition-colors duration-[220ms] hover:bg-ink-25"
                 >
+                  <span className="text-eyebrow text-ink-500">
+                    {entry.order < service.order ? 'Before this' : 'After this'}
+                  </span>
                   <span
                     data-numeric
-                    className="font-mono text-[0.8125rem] tracking-widest text-amber-700"
+                    className="mt-4 font-mono text-[0.8125rem] tracking-widest text-amber-700"
                   >
                     {String(entry.order).padStart(2, '0')}
                   </span>
-                  <h3 className="text-h4 mt-3 font-semibold">{entry.title}</h3>
-                  <p className="mt-2 text-[0.9375rem] leading-relaxed text-ink-600">
-                    {entry.outcome}
-                  </p>
+                  <h3 className="text-h3 mt-2 group-hover:text-amber-700">
+                    {entry.title}
+                  </h3>
                 </Link>
               </li>
             ))}
           </ul>
 
-          <div className="mt-10">
-            <ButtonLink href="/solutions" variant="secondary">
-              See the solutions we deliver
+          <div className="mt-10 flex flex-wrap gap-3">
+            <ButtonLink href="/services" variant="secondary">
+              All {allServices.length} delivery stages
               <ArrowRight
                 width={16}
                 height={16}
                 strokeWidth={2}
                 aria-hidden="true"
               />
+            </ButtonLink>
+            <ButtonLink href="/solutions" variant="ghost">
+              See the solutions we deliver
             </ButtonLink>
           </div>
         </Container>

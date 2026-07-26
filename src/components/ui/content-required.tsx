@@ -1,14 +1,19 @@
 import { AlertTriangle } from 'lucide-react';
 
 import { contentRequired } from '@/lib/content-required';
+import { showContentTodos } from '@/lib/content-visibility';
 import { cn } from '@/lib/utils';
 
 /**
- * Visible marker for content SAAN has not yet supplied or confirmed.
+ * Marker for content SAAN has not yet supplied or confirmed.
  *
- * Deliberately conspicuous so it can never be mistaken for finished copy
- * during a client review, and never quietly shipped. `npm run audit:content`
- * reports every occurrence, and the launch build fails while any remain.
+ * Renders NOTHING unless `SHOW_CONTENT_TODOS=true`. On a normal preview or
+ * production build the missing field is omitted entirely rather than shown as
+ * a placeholder — a visitor should never see scaffolding, and a fake or
+ * example email address would be worse than no email address at all.
+ *
+ * Because these render nothing publicly, `npm run audit:content` and
+ * `npm run validate:launch` are what keep the outstanding items visible to us.
  */
 export function ContentRequired({
   what,
@@ -17,6 +22,8 @@ export function ContentRequired({
   what: string;
   className?: string;
 }) {
+  if (!showContentTodos()) return null;
+
   return (
     <span className={cn('content-required', className)} role="note">
       <AlertTriangle
@@ -32,10 +39,11 @@ export function ContentRequired({
 }
 
 /**
- * Block-level placeholder for a whole section whose content does not exist yet.
+ * Block-level marker for a section whose content does not exist yet.
  *
- * Shows the real structure of the section without inventing content to fill
- * it — the brief prohibits fabricating customers, projects, partners or awards.
+ * Also renders nothing publicly. Sections that would otherwise be empty use a
+ * genuine editorial treatment instead — see `PreparingNote` — rather than
+ * showing the visitor a warning box.
  */
 export function ContentRequiredBlock({
   what,
@@ -46,6 +54,8 @@ export function ContentRequiredBlock({
   note: string;
   className?: string;
 }) {
+  if (!showContentTodos()) return null;
+
   return (
     <div
       className={cn(
@@ -68,5 +78,32 @@ export function ContentRequiredBlock({
       </p>
       <p className="text-body-sm mt-3 max-w-2xl text-ink-600">{note}</p>
     </div>
+  );
+}
+
+/**
+ * Public-facing note for content that is genuinely being prepared.
+ *
+ * Deliberately quiet and editorial — a single line of muted text, never a
+ * warning panel. Used where a section's structure is worth keeping visible
+ * while its content is pending.
+ */
+export function PreparingNote({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <p
+      className={cn(
+        'text-body-sm flex items-center gap-2.5 text-ink-500',
+        className
+      )}
+    >
+      <span aria-hidden="true" className="h-px w-6 shrink-0 bg-amber-500" />
+      {children}
+    </p>
   );
 }

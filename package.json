@@ -21,7 +21,10 @@
     "test:e2e:ui": "playwright test --ui",
     "test:a11y": "playwright test --project=accessibility",
     "audit:content": "tsx scripts/audit-content.ts",
+    "audit:repetition": "tsx scripts/audit-repetition.ts",
+    "capture:visuals": "node scripts/capture-visual-review.mjs",
     "validate:content": "tsx scripts/validate-content.ts",
+    "validate:launch": "tsx scripts/validate-launch.ts",
     "lhci": "lhci autorun",
     "verify": "npm run lint && npm run typecheck && npm run validate:content && npm run test:unit && npm run build"
   },

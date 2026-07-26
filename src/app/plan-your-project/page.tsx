@@ -107,12 +107,10 @@ export default function PlanYourProjectPage() {
                   </ButtonLink>
                 </div>
 
-                <div className="mt-7 border-t border-ink-200 pt-6">
-                  <p className="text-eyebrow text-ink-500">Or email us</p>
-                  <div className="mt-3">
-                    <ContentRequired what="Confirmed sales email" />
-                  </div>
-                </div>
+                <ContentRequired
+                  className="mt-6"
+                  what="Confirmed sales email"
+                />
               </div>
 
               <div className="mt-6 rounded-lg border border-ink-200 p-7">

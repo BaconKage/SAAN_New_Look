@@ -74,3 +74,17 @@ export function hasValue(field: SiteValue): field is SiteValue & {
 } {
   return field.value !== null && field.value.length > 0;
 }
+
+/**
+ * True when a value may be shown to visitors.
+ *
+ * Publication requires the value to exist AND to have been confirmed by SAAN.
+ * A value carried across from the old website is present in the config for the
+ * record, but is never rendered publicly until it is verified — publishing an
+ * unconfirmed telephone number is how enquiries get lost.
+ */
+export function isPublic(field: SiteValue): field is SiteValue & {
+  value: string;
+} {
+  return hasValue(field) && field.verified;
+}

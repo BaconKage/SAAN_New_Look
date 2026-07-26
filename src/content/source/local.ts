@@ -1,4 +1,5 @@
 import { siteConfig, type SiteConfig } from '@/config/site';
+import { industryDetails } from '@/content/data/industry-details';
 import { industries } from '@/content/data/industries';
 import {
   partners as allPartners,
@@ -7,8 +8,10 @@ import {
   testimonials as allTestimonials,
 } from '@/content/data/proof';
 import { processStages, services } from '@/content/data/services';
+import { solutionDetails } from '@/content/data/solution-details';
 import { solutions } from '@/content/data/solutions';
 import {
+  industryDetailSchema,
   industrySummarySchema,
   isPublishablePartner,
   partnerSchema,
@@ -16,14 +19,17 @@ import {
   projectSummarySchema,
   resourceSummarySchema,
   serviceSummarySchema,
+  solutionDetailSchema,
   solutionSummarySchema,
   testimonialSchema,
+  type IndustryDetail,
   type IndustrySummary,
   type Partner,
   type ProcessStage,
   type ProjectSummary,
   type ResourceSummary,
   type ServiceSummary,
+  type SolutionDetail,
   type SolutionSummary,
   type Testimonial,
 } from '@/content/schemas';
@@ -70,10 +76,20 @@ const getValidatedSolutions = validated<SolutionSummary>(
   solutionSummarySchema,
   solutions
 );
+const getValidatedSolutionDetails = validated<SolutionDetail>(
+  'solution detail',
+  solutionDetailSchema,
+  solutionDetails
+);
 const getValidatedIndustries = validated<IndustrySummary>(
   'industry',
   industrySummarySchema,
   industries
+);
+const getValidatedIndustryDetails = validated<IndustryDetail>(
+  'industry detail',
+  industryDetailSchema,
+  industryDetails
 );
 const getValidatedServices = validated<ServiceSummary>(
   'service',
@@ -123,12 +139,20 @@ export const localContentSource: ContentSource = {
     return getValidatedSolutions().find((s) => s.slug === slug) ?? null;
   },
 
+  async getSolutionDetail(slug: string): Promise<SolutionDetail | null> {
+    return getValidatedSolutionDetails().find((d) => d.slug === slug) ?? null;
+  },
+
   async getIndustries(): Promise<IndustrySummary[]> {
     return byOrder(getValidatedIndustries());
   },
 
   async getIndustry(slug: string): Promise<IndustrySummary | null> {
     return getValidatedIndustries().find((i) => i.slug === slug) ?? null;
+  },
+
+  async getIndustryDetail(slug: string): Promise<IndustryDetail | null> {
+    return getValidatedIndustryDetails().find((d) => d.slug === slug) ?? null;
   },
 
   async getServices(): Promise<ServiceSummary[]> {

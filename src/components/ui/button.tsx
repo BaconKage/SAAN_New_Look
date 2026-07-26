@@ -16,7 +16,10 @@ import { cn } from '@/lib/utils';
 
 const base = [
   'inline-flex items-center justify-center gap-2',
-  'font-medium text-center whitespace-nowrap',
+  // Deliberately NOT `whitespace-nowrap`: a long label in a narrow stacked
+  // column pushed the page 27px wider than the viewport at 320px. Wrapping is
+  // preferable to horizontal scroll.
+  'font-medium text-center text-balance',
   'rounded-sm border border-transparent',
   'transition-[background-color,border-color,color,transform]',
   'duration-[160ms] ease-[cubic-bezier(0.2,0,0,1)]',
@@ -36,10 +39,11 @@ const variants = {
     'bg-transparent text-ink-0 border-ink-0/30 hover:border-ink-0 hover:bg-ink-0/10',
 } as const;
 
+/** `min-h` rather than a fixed height, so a wrapped label is not clipped. */
 const sizes = {
-  sm: 'h-9 px-3.5 text-[0.875rem]',
-  md: 'h-11 px-5 text-[0.9375rem]',
-  lg: 'h-13 px-7 text-[1rem]',
+  sm: 'min-h-9 px-3.5 py-1.5 text-[0.875rem]',
+  md: 'min-h-11 px-5 py-2.5 text-[0.9375rem]',
+  lg: 'min-h-13 px-7 py-3 text-[1rem]',
 } as const;
 
 export interface ButtonProps extends Omit<

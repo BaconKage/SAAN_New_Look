@@ -22,6 +22,12 @@ export const explorerOptions: ExplorerOption[] = [
       'Every room works slightly differently, so visitors need help to start',
       'Cables and adaptors go missing, and guests cannot share their screen',
     ],
+    evaluates: [
+      'Table length, seating positions and the room’s aspect ratio',
+      'Reverberation and the noise floor from air conditioning',
+      'The meeting platform you have standardised on, and how rooms are licensed',
+      'Network addressing, bandwidth and firewall rules with your IT team',
+    ],
     capabilities: [
       {
         title: 'Coverage designed to the room',
@@ -45,6 +51,10 @@ export const explorerOptions: ExplorerOption[] = [
       'Training rooms',
       'Executive briefing rooms',
     ],
+    relatedServices: [
+      'site-survey-and-system-design',
+      'integration-and-commissioning',
+    ],
   },
   {
     id: 'digital-signage-network',
@@ -56,6 +66,12 @@ export const explorerOptions: ExplorerOption[] = [
       'Screens show out-of-date content because publishing is too awkward',
       'Nobody knows which displays are offline until someone walks past one',
       'Consumer televisions fail early when run for long hours',
+    ],
+    evaluates: [
+      'Ambient light and orientation at each screen location',
+      'Daily operating hours, which decides panel grade',
+      'Who publishes content and how approval works',
+      'Network access at each site, and what happens when it drops',
     ],
     capabilities: [
       {
@@ -80,6 +96,10 @@ export const explorerOptions: ExplorerOption[] = [
       'Campus and wayfinding',
       'Cafeteria and menu boards',
     ],
+    relatedServices: [
+      'consultation-and-requirement-analysis',
+      'training-and-handover',
+    ],
   },
   {
     id: 'auditorium',
@@ -91,6 +111,12 @@ export const explorerOptions: ExplorerOption[] = [
       'Speech is loud at the front and unintelligible at the back',
       'Feedback limits how far microphones can be turned up',
       'The room sounds different full than it did during the demonstration',
+    ],
+    evaluates: [
+      'Room geometry, seating rake and balcony overhangs',
+      'Reverberation time and surface treatment',
+      'The real mix of speech and music through the year',
+      'Wireless channel count and frequency coordination',
     ],
     capabilities: [
       {
@@ -115,6 +141,10 @@ export const explorerOptions: ExplorerOption[] = [
       'Banquet halls',
       'Worship spaces',
     ],
+    relatedServices: [
+      'site-survey-and-system-design',
+      'integration-and-commissioning',
+    ],
   },
   {
     id: 'classroom',
@@ -126,6 +156,12 @@ export const explorerOptions: ExplorerOption[] = [
       'Panels were installed but teachers went back to the whiteboard',
       'Remote students cannot hear questions asked from the back of the room',
       'Mounting height suits the installer, not the person teaching',
+    ],
+    evaluates: [
+      'Mounting height and reach for the people teaching',
+      'Sightlines and text size from the back row',
+      'Daylight, glare and blind control',
+      'Whether remote participants need to hear the class as well as the teacher',
     ],
     capabilities: [
       {
@@ -150,6 +186,7 @@ export const explorerOptions: ExplorerOption[] = [
       'Seminar and tutorial rooms',
       'Computer and language labs',
     ],
+    relatedServices: ['training-and-handover', 'supply-and-installation'],
   },
   {
     id: 'led-wall',
@@ -161,6 +198,12 @@ export const explorerOptions: ExplorerOption[] = [
       'Pixel pitch chosen on price, then content looks coarse at real viewing distance',
       'Structure, power and heat load discovered late in the build programme',
       'No practical access for servicing individual modules after handover',
+    ],
+    evaluates: [
+      'The closest position anyone will realistically stand',
+      'Structure, fixings and floor loading with the building team',
+      'Power distribution, heat load and cooling',
+      'Service access and how spare modules will be held',
     ],
     capabilities: [
       {
@@ -185,6 +228,10 @@ export const explorerOptions: ExplorerOption[] = [
       'Control rooms',
       'Retail and exhibition spaces',
     ],
+    relatedServices: [
+      'site-survey-and-system-design',
+      'supply-and-installation',
+    ],
   },
   {
     id: 'video-wall',
@@ -196,6 +243,12 @@ export const explorerOptions: ExplorerOption[] = [
       'Operators cannot rearrange sources without calling for help',
       'Bezels fall exactly where the important content sits',
       'Displays drift in colour and brightness against each other over time',
+    ],
+    evaluates: [
+      'The number and type of sources, and their resolutions',
+      'How operators need to rearrange content during an incident',
+      'Latency requirements for live data',
+      'Calibration and how uniformity will be maintained',
     ],
     capabilities: [
       {
@@ -220,6 +273,10 @@ export const explorerOptions: ExplorerOption[] = [
       'Broadcast and monitoring',
       'Corporate lobbies',
     ],
+    relatedServices: [
+      'integration-and-commissioning',
+      'amc-and-preventive-maintenance',
+    ],
   },
   {
     id: 'professional-audio',
@@ -231,6 +288,12 @@ export const explorerOptions: ExplorerOption[] = [
       'Wireless microphones drop out as more channels are added',
       'Volume is adjusted by whoever is nearest the rack',
       'The system was specified for music but is mostly used for speech',
+    ],
+    evaluates: [
+      'What the space is genuinely used for week to week',
+      'Background noise from building services',
+      'Microphone types, channel count and frequency coordination',
+      'Who will operate the system for routine events',
     ],
     capabilities: [
       {
@@ -255,6 +318,7 @@ export const explorerOptions: ExplorerOption[] = [
       'Sports and multipurpose halls',
       'Houses of worship',
     ],
+    relatedServices: ['site-survey-and-system-design', 'training-and-handover'],
   },
   {
     id: 'room-automation',
@@ -266,6 +330,12 @@ export const explorerOptions: ExplorerOption[] = [
       'Four remote controls and a laminated instruction sheet',
       'Projectors and displays left running overnight',
       'Facilities has no view of which rooms have a fault',
+    ],
+    evaluates: [
+      'The three or four things people do most often in the room',
+      'Whether visitors or trained staff are the main users',
+      'Which systems genuinely benefit from being integrated',
+      'Security and addressing requirements with your IT team',
     ],
     capabilities: [
       {
@@ -290,6 +360,10 @@ export const explorerOptions: ExplorerOption[] = [
       'Lecture theatres',
       'Executive and VIP rooms',
     ],
+    relatedServices: [
+      'integration-and-commissioning',
+      'consultation-and-requirement-analysis',
+    ],
   },
   {
     id: 'support-or-upgrade',
@@ -301,6 +375,12 @@ export const explorerOptions: ExplorerOption[] = [
       'The original installer is no longer contactable',
       'Nobody has the documentation, passwords or configuration files',
       'Some equipment is fine and some is past end of support, and it is unclear which',
+    ],
+    evaluates: [
+      'What is actually installed, and its firmware and warranty status',
+      'Which rooms are business-critical and which are not',
+      'What can be monitored and resolved remotely',
+      'A realistic refresh horizon for each part of the estate',
     ],
     capabilities: [
       {
@@ -324,6 +404,10 @@ export const explorerOptions: ExplorerOption[] = [
       'Estates with mixed equipment ages',
       'Sites without a maintenance contract',
       'Phased refresh programmes',
+    ],
+    relatedServices: [
+      'upgrades-and-lifecycle-management',
+      'amc-and-preventive-maintenance',
     ],
   },
 ];

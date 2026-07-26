@@ -29,10 +29,10 @@ test.describe('homepage', () => {
   test('renders every homepage section', async ({ page }) => {
     const sections = [
       'solutions-heading',
+      'evaluate-heading',
       'explorer-heading',
       'industries-heading',
       'process-heading',
-      'projects-heading',
       'support-heading',
       'partners-heading',
       'cta-heading',
@@ -42,18 +42,52 @@ test.describe('homepage', () => {
     }
   });
 
-  test('lists all eight solutions', async ({ page }) => {
+  test('links to all eight solutions', async ({ page }) => {
+    // Two feature panels plus a six-item index — deliberately not a uniform
+    // grid, so this counts links rather than cards.
     const section = page.locator('section', {
       has: page.locator('#solutions-heading'),
     });
-    await expect(section.getByRole('article')).toHaveCount(8);
+    const links = section.locator('a[href^="/solutions/"]');
+    await expect(links).toHaveCount(8);
   });
 
-  test('lists all seven industries', async ({ page }) => {
+  test('links to all seven industries', async ({ page }) => {
     const section = page.locator('section', {
       has: page.locator('#industries-heading'),
     });
-    await expect(section.getByRole('article')).toHaveCount(7);
+    await expect(section.locator('a[href^="/industries/"]')).toHaveCount(7);
+  });
+
+  test('shows the technical evaluation criteria', async ({ page }) => {
+    const section = page.locator('section', {
+      has: page.locator('#evaluate-heading'),
+    });
+    await expect(section.getByRole('heading', { level: 3 })).toHaveCount(8);
+    await expect(section.getByText('Ambient light')).toBeVisible();
+  });
+
+  test('renders the hero system graphic without an image request', async ({
+    page,
+  }) => {
+    const heroSvg = page.locator('section#hero-heading, section').first();
+    await expect(heroSvg.locator('svg').first()).toBeAttached();
+    // The hero must not depend on a raster image for its composition.
+    await expect(page.locator('main img')).toHaveCount(0);
+  });
+
+  test('shows no unresolved content markers to visitors', async ({ page }) => {
+    const body = (await page.textContent('body')) ?? '';
+    expect(body).not.toContain('[CONTENT REQUIRED');
+  });
+
+  test('publishes only the confirmed telephone number', async ({ page }) => {
+    const body = (await page.textContent('body')) ?? '';
+    expect(body).toContain('+91 93426 59932');
+    // The two numbers carried across from the old site are unverified and
+    // must not be published.
+    expect(body).not.toContain('2318 2011');
+    expect(body).not.toContain('88671 38111');
   });
 
   test('shows the four delivery stages', async ({ page }) => {
@@ -139,10 +173,21 @@ test.describe('solution explorer', () => {
     await expect(tabs.first()).toBeFocused();
   });
 
-  test('states that a site assessment is required', async ({ page }) => {
+  test('frames itself as a conversation, not a specification', async ({
+    page,
+  }) => {
     await page.goto('/');
     await expect(
-      page.getByText(/specified after a site assessment/i).first()
+      page
+        .getByText(/before recommending a final system|not a specification/i)
+        .first()
+    ).toBeVisible();
+  });
+
+  test('shows what SAAN would evaluate for a requirement', async ({ page }) => {
+    await page.goto('/');
+    await expect(
+      page.getByRole('heading', { name: /what saan would evaluate/i })
     ).toBeVisible();
   });
 });
