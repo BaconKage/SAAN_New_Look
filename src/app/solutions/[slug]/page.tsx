@@ -1,388 +1,275 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowUpRightIcon, CheckIcon, PlusIcon } from '@phosphor-icons/react/ssr';
+import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
 
-import { SystemDiagram } from '@/components/media/system-diagram';
-import { PageHeader } from '@/components/sections/page-header';
-import { PreparingNote } from '@/components/ui/content-required';
-import { ButtonLink } from '@/components/ui/button';
-import { Faqs } from '@/components/sections/faqs';
+import { Parallax } from '@/components/motion/parallax';
+import { Split } from '@/components/motion/split';
+import { CtaBand } from '@/components/sections/cta-band';
+import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
-import { Container, Section, SectionHeader } from '@/components/ui/section';
-import { content } from '@/content/source';
-import { absoluteUrl, buildMetadata } from '@/lib/metadata';
+import { getProducts } from '@/content/products';
+import { PRIMARY_CTA } from '@/content/site';
+import { getSolution, solutions } from '@/content/solutions';
 
-/**
- * Solution detail page.
- *
- * Follows the consultation structure in the Phase 3A brief: outcome, the
- * problems SAAN expects to find, what SAAN evaluates before specifying, what
- * gets delivered, a simplified architecture, typical applications, delivery
- * considerations, lifecycle, FAQs and a distinct call to action.
- *
- * The visual treatment varies by section — split, full-bleed diagram, dark
- * technical band, numbered list — so the information architecture stays
- * consistent while the page does not read as one repeated card grid.
- */
-
-export async function generateStaticParams() {
-  const solutions = await content.getSolutions();
-  return solutions.map((solution) => ({ slug: solution.slug }));
+export function generateStaticParams() {
+  return solutions.map((s) => ({ slug: s.slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const solution = await content.getSolution(slug);
-  if (solution === null) return {};
-
-  return buildMetadata({
-    title: solution.seo.metaTitle,
-    description: solution.seo.metaDescription,
-    path: `/solutions/${solution.slug}`,
-  });
+  const s = getSolution(slug);
+  if (!s) return {};
+  return {
+    title: s.title,
+    description: `${s.line} ${s.intro.split('. ')[0]}.`,
+    alternates: { canonical: `/solutions/${s.slug}` },
+    openGraph: { images: [{ url: s.image }] },
+  };
 }
 
-export default async function SolutionPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function SolutionPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const [solution, detail, allSolutions, industries] = await Promise.all([
-    content.getSolution(slug),
-    content.getSolutionDetail(slug),
-    content.getSolutions(),
-    content.getIndustries(),
-  ]);
+  const s = getSolution(slug);
+  if (!s) notFound();
+  const idx = solutions.findIndex((x) => x.slug === s.slug);
+  const next = solutions[(idx + 1) % solutions.length]!;
+  const related = getProducts(s.products);
 
-  if (solution === null) notFound();
-
-  const related = allSolutions
-    .filter((entry) => entry.slug !== solution.slug)
-    .slice(0, 3);
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: s.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  };
 
   return (
     <>
-      <PageHeader
-        eyebrow="Solution"
-        title={solution.outcome}
-        lead={detail?.intro ?? solution.summary}
-        trail={[
-          { label: 'Solutions', href: '/solutions' },
-          { label: solution.title, href: `/solutions/${solution.slug}` },
-        ]}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
-      {/* ---------------------------------------------- customer problems -- */}
-      {detail ? (
-        <Section aria-labelledby="challenges-heading">
-          <Container>
-            <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-              <div className="lg:col-span-4">
-                <SectionHeader
-                  id="challenges-heading"
-                  eyebrow="What we usually find"
-                  title="The problems that bring people to us"
-                />
-              </div>
+      {/* Hero */}
+      <section className="relative flex min-h-[88dvh] items-end overflow-hidden bg-ink-950 pb-16 pt-[calc(var(--header-h)+4rem)] md:pb-24">
+        <Parallax>
+          <Image src={s.image} alt="" fill priority sizes="100vw" className="object-cover" />
+        </Parallax>
+        <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/55 to-ink-950/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink-950/70 to-transparent" />
+        <div className="container-x relative">
+          <nav aria-label="Breadcrumb" className="mb-8" data-reveal="fade">
+            <ol className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.1em] text-fog-400">
+              <li>
+                <Link href="/solutions" className="transition-colors hover:text-fog-50">
+                  Solutions
+                </Link>
+              </li>
+              <li className="text-white/25">/</li>
+              <li aria-current="page" className="text-fog-200">
+                {s.short}
+              </li>
+            </ol>
+          </nav>
+          <Split as="h1" text={s.title} className="display max-w-[16ch] text-[clamp(2.7rem,6.6vw,6.5rem)] text-fog-50" />
+          <p data-reveal style={{ ['--d' as string]: 300 }} className="mt-7 max-w-xl text-[clamp(1.05rem,1.4vw,1.25rem)] leading-relaxed text-fog-200">
+            {s.line}
+          </p>
+        </div>
+      </section>
 
-              <ol className="lg:col-span-8">
-                {detail.challenges.map((challenge, index) => (
-                  <li
-                    key={challenge.title}
-                    className="grid gap-x-6 gap-y-2 border-t border-ink-200 py-7 last:border-b sm:grid-cols-[3rem_1fr]"
-                  >
-                    <span
-                      data-numeric
-                      className="font-mono text-[0.8125rem] tracking-widest text-amber-700"
-                    >
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <div>
-                      <h3 className="text-h4 font-semibold">
-                        {challenge.title}
-                      </h3>
-                      <p className="text-body mt-2 text-ink-600">
-                        {challenge.description}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </Container>
-        </Section>
-      ) : null}
+      {/* Overview */}
+      <section aria-label="Overview" className="bg-ink-950 py-24 md:py-32">
+        <div className="container-x grid gap-14 lg:grid-cols-12">
+          <p
+            data-reveal
+            className="text-[clamp(1.45rem,2.4vw,2.2rem)] font-medium leading-[1.3] tracking-[-0.015em] text-fog-50 lg:col-span-7"
+          >
+            {s.intro}
+          </p>
+          <ul className="space-y-5 lg:col-span-4 lg:col-start-9">
+            {s.outcomes.map((o, i) => (
+              <li key={o} data-reveal style={{ ['--d' as string]: 120 + i * 90 }} className="flex gap-4 border-t border-white/[0.08] pt-5">
+                <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-full bg-signal-500 text-ink-950">
+                  <CheckIcon weight="bold" className="size-3.5" />
+                </span>
+                <span className="text-lg leading-snug text-fog-200">{o}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
-      {/* ------------------------------------------- what SAAN evaluates --- */}
-      {detail ? (
-        <Section surface="dark" aria-labelledby="evaluates-heading">
-          <Container>
-            <SectionHeader
-              id="evaluates-heading"
-              eyebrow="Before anything is specified"
-              title="What we evaluate"
-              lead="Every room is different. SAAN studies the space, the way people work in it, the platforms you use, the acoustics, the lighting, the network readiness and the long-term support needs before recommending a final system."
-              tone="inverse"
-            />
-
-            <ul className="mt-14 grid gap-x-10 gap-y-9 md:grid-cols-2 lg:grid-cols-3">
-              {detail.evaluates.map((item) => (
-                <li key={item.title} className="border-t border-ink-0/15 pt-6">
-                  <h3 className="text-[1.0625rem] font-medium text-ink-0">
-                    {item.title}
+      {/* Capabilities */}
+      <section aria-labelledby="cap-title" className="border-t border-white/[0.07] bg-ink-900 py-24 md:py-32">
+        <div className="container-x">
+          <h2 id="cap-title" className="display max-w-[18ch] text-[clamp(2.2rem,4.4vw,4rem)] text-fog-50" data-reveal>
+            What we deliver
+          </h2>
+          <div className="mt-14 grid border-t border-white/[0.08] md:grid-cols-2">
+            {s.capabilities.map((c, i) => (
+              <div
+                key={c.title}
+                data-reveal
+                style={{ ['--d' as string]: (i % 2) * 100 }}
+                className="group flex gap-6 border-b border-white/[0.08] py-9 md:px-2 md:odd:border-r md:odd:pr-10 md:even:pl-10"
+              >
+                <span className="grid size-14 shrink-0 place-items-center rounded-2xl border border-white/10 text-signal-400 transition-colors duration-500 group-hover:border-signal-500 group-hover:bg-signal-500 group-hover:text-ink-950">
+                  <Icon name={c.icon} className="size-7" />
+                </span>
+                <div>
+                  <h3 className="text-xl font-semibold text-fog-50" style={{ fontStretch: '108%' }}>
+                    {c.title}
                   </h3>
-                  <p className="mt-3 text-[0.9375rem] leading-relaxed text-ink-400">
-                    {item.description}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </Container>
-        </Section>
-      ) : null}
-
-      {/* --------------------------------------------- what SAAN delivers -- */}
-      <Section surface="subtle" aria-labelledby="delivers-heading">
-        <Container>
-          <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-            <div className="lg:col-span-5">
-              <SectionHeader
-                id="delivers-heading"
-                eyebrow="Scope"
-                title="What SAAN delivers"
-              />
-              <ul className="mt-8 space-y-5">
-                {solution.highlights.map((highlight) => (
-                  <li key={highlight} className="flex items-start gap-4">
-                    <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-md border border-ink-200 bg-ink-0 text-amber-700">
-                      <Icon name={solution.icon} size="sm" />
-                    </span>
-                    <span className="text-body pt-0.5 text-ink-700">
-                      {highlight}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {detail ? (
-              <div className="lg:col-span-7">
-                <h3 className="text-eyebrow text-ink-500">
-                  Simplified system architecture
-                </h3>
-                <SystemDiagram
-                  className="mt-6"
-                  data={detail.architecture}
-                  tone="light"
-                />
+                  <p className="mt-2 leading-relaxed text-fog-400">{c.text}</p>
+                </div>
               </div>
-            ) : null}
+            ))}
           </div>
-        </Container>
-      </Section>
+        </div>
+      </section>
 
-      {/* -------------------------------------------- typical applications - */}
-      {detail ? (
-        <Section aria-labelledby="applications-heading">
-          <Container>
-            <SectionHeader
-              id="applications-heading"
-              eyebrow="Where it applies"
-              title="Typical applications"
-            />
-            <ul className="mt-12 grid gap-px overflow-hidden rounded-lg border border-ink-200 bg-ink-200 sm:grid-cols-2 lg:grid-cols-4">
-              {detail.applications.map((application) => (
-                <li key={application.title} className="bg-ink-0 p-6">
-                  <h3 className="text-h4 font-semibold">{application.title}</h3>
-                  <p className="mt-3 text-[0.9375rem] leading-relaxed text-ink-600">
-                    {application.description}
+      {/* Typical system, drawn as a rack */}
+      <section aria-labelledby="sys-title" className="bg-ink-950 py-24 md:py-32">
+        <div className="container-x grid gap-14 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <div className="lg:sticky lg:top-32">
+              <h2 id="sys-title" className="display text-[clamp(2.2rem,4.4vw,4rem)] text-fog-50" data-reveal>
+                Inside a typical system
+              </h2>
+              <p className="mt-5 max-w-sm leading-relaxed text-fog-400" data-reveal style={{ ['--d' as string]: 100 }}>
+                Every project is designed for its room. These are the building blocks we usually start from, and brands we often specify.
+              </p>
+            </div>
+          </div>
+          <ol className="space-y-3 lg:col-span-8">
+            {s.system.map((row, i) => (
+              <li
+                key={row.role}
+                data-reveal
+                style={{ ['--d' as string]: i * 80 }}
+                className="group relative grid grid-cols-[auto_1fr] items-center gap-x-5 gap-y-4 overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-b from-ink-800 to-ink-850 py-5 pl-4 pr-6 md:grid-cols-[auto_1.1fr_1fr]"
+              >
+                <span aria-hidden className="flex h-full flex-col justify-between py-1">
+                  <span className="size-2.5 rounded-full border border-white/20" />
+                  <span className="size-2.5 rounded-full border border-white/20" />
+                </span>
+                <div>
+                  <p className="flex items-center gap-3 text-lg font-semibold text-fog-50" style={{ fontStretch: '108%' }}>
+                    <span aria-hidden className="size-1.5 rounded-full bg-fog-500 transition-colors duration-300 group-hover:bg-signal-500 group-hover:shadow-[0_0_10px_rgb(224_138_0)]" />
+                    {row.role}
                   </p>
-                </li>
-              ))}
-            </ul>
-          </Container>
-        </Section>
-      ) : null}
-
-      {/* --------------------------------------------- delivery + lifecycle */}
-      {detail ? (
-        <Section surface="subtle" aria-labelledby="delivery-heading">
-          <Container>
-            <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-              <div className="lg:col-span-6">
-                <SectionHeader
-                  id="delivery-heading"
-                  eyebrow="Delivering it"
-                  title="What this kind of project demands"
-                  lead={detail.deliveryNote}
-                />
-                <ul className="mt-8 space-y-3">
-                  {detail.deliveryPoints.map((point) => (
-                    <li
-                      key={point}
-                      className="flex gap-3 text-[0.9375rem] leading-relaxed text-ink-700"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="mt-[0.7em] h-px w-3 shrink-0 bg-amber-500"
-                      />
-                      {point}
+                  <p className="mt-1 text-[0.95rem] leading-relaxed text-fog-400">{row.detail}</p>
+                </div>
+                <ul className="col-span-2 flex flex-wrap gap-2 md:col-span-1 md:justify-end">
+                  {row.brands.map((b) => (
+                    <li key={b} className="rounded-full border border-white/10 bg-ink-950/60 px-3 py-1 font-mono text-xs text-fog-200">
+                      {b}
                     </li>
                   ))}
                 </ul>
-                <div className="mt-8">
-                  <Link
-                    href="/services"
-                    className="text-[0.9375rem] font-medium text-amber-700 underline underline-offset-4 hover:text-amber-800"
-                  >
-                    How we run a project, stage by stage
-                  </Link>
-                </div>
-              </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
 
-              <div className="lg:col-span-6">
-                <SectionHeader
-                  eyebrow="Afterwards"
-                  title="Support and lifecycle"
-                />
-                <dl className="mt-8 space-y-7">
-                  {detail.lifecycle.map((item) => (
-                    <div
-                      key={item.title}
-                      className="border-t border-ink-200 pt-6"
-                    >
-                      <dt className="text-[1.0625rem] font-medium text-ink-900">
-                        {item.title}
-                      </dt>
-                      <dd className="text-body mt-2 text-ink-600">
-                        {item.description}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-                <div className="mt-8">
-                  <Link
-                    href="/solutions/managed-av-services"
-                    className="text-[0.9375rem] font-medium text-amber-700 underline underline-offset-4 hover:text-amber-800"
-                  >
-                    Managed AV services
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </Container>
-        </Section>
-      ) : null}
-
-      {/* ------------------------------------------------------------- FAQs */}
-      {detail ? (
-        <Faqs
-          faqs={detail.faqs}
-          eyebrow="Questions we are asked"
-          title={`About ${solution.title.toLowerCase()}`}
-          pageUrl={absoluteUrl(`/solutions/${solution.slug}`)}
-        />
-      ) : null}
-
-      {/* ---------------------------------------- related industries + work */}
-      <Section surface="subtle" aria-labelledby="related-heading">
-        <Container>
-          <SectionHeader
-            id="related-heading"
-            eyebrow="Related"
-            title="Where this fits alongside everything else"
-          />
-
-          <div className="mt-12 grid gap-10 lg:grid-cols-12 lg:gap-16">
-            <div className="lg:col-span-5">
-              <h3 className="text-eyebrow text-ink-500">
-                Sectors we deliver this in
-              </h3>
-              <ul className="mt-5 flex flex-wrap gap-2">
-                {industries.map((industry) => (
-                  <li key={industry.slug}>
-                    <Link
-                      href={`/industries/${industry.slug}`}
-                      className="inline-flex min-h-[2.25rem] items-center rounded-full border border-ink-200 bg-ink-0 px-4 text-[0.875rem] text-ink-700 transition-colors hover:border-ink-400 hover:text-ink-900"
-                    >
-                      {industry.navLabel}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-
-              <h3 className="text-eyebrow mt-10 text-ink-500">
-                Project stories
-              </h3>
-              <PreparingNote className="mt-4">
-                Case studies for this solution are being prepared for
-                publication.
-              </PreparingNote>
-            </div>
-
-            <div className="lg:col-span-7">
-              <h3 className="text-eyebrow text-ink-500">Other solutions</h3>
-              <ul className="mt-5 divide-y divide-ink-200 border-y border-ink-200">
-                {related.map((entry) => (
-                  <li key={entry.slug}>
-                    <Link
-                      href={`/solutions/${entry.slug}`}
-                      className="group flex items-baseline justify-between gap-6 py-5 transition-colors"
-                    >
-                      {/* Title only. Repeating each solution's outcome line
-                          here put the same sentences on seven pages. */}
-                      <span className="text-[1.0625rem] font-medium text-ink-900 group-hover:text-amber-700">
-                        {entry.title}
-                      </span>
-                      <ArrowRight
-                        width={17}
-                        height={17}
-                        strokeWidth={2}
-                        className="mt-1 shrink-0 text-ink-300 transition-[transform,color] group-hover:translate-x-0.5 group-hover:text-ink-900"
-                        aria-hidden="true"
-                      />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </Container>
-      </Section>
-
-      {/* -------------------------------------------------------------- CTA */}
-      <Section surface="dark" spacing="md" aria-labelledby="solution-cta">
-        <Container>
-          <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
-            <div className="lg:col-span-8">
-              <h2 id="solution-cta" className="text-h1 text-balance text-ink-0">
-                {detail?.ctaHeadline ?? 'Tell us about the space'}
+      {/* Related products */}
+      {related.length > 0 && (
+        <section aria-labelledby="rel-title" className="border-t border-white/[0.07] bg-ink-900 py-24 md:py-32">
+          <div className="container-x">
+            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <h2 id="rel-title" className="display max-w-[18ch] text-[clamp(2.2rem,4.4vw,4rem)] text-fog-50" data-reveal>
+                Products we often specify
               </h2>
-              <p className="text-body-lg mt-5 max-w-2xl text-ink-300">
-                {detail?.ctaBody ??
-                  'Send us the requirement and we will come back with the questions that matter.'}
-              </p>
+              <Link href="/products" className="font-medium text-fog-200 underline-offset-4 hover:text-fog-50 hover:underline">
+                All products
+              </Link>
             </div>
-            <div className="lg:col-span-4 lg:justify-self-end">
-              <ButtonLink href="/plan-your-project" variant="accent" size="lg">
-                Plan Your Project
-                <ArrowRight
-                  width={18}
-                  height={18}
-                  strokeWidth={2}
-                  aria-hidden="true"
-                />
-              </ButtonLink>
+            <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {related.map((p, i) => (
+                <Link
+                  key={p.id}
+                  href={`/products?item=${p.id}`}
+                  data-reveal
+                  style={{ ['--d' as string]: (i % 3) * 90 }}
+                  className="studio group relative flex aspect-[5/4] flex-col overflow-hidden rounded-[var(--radius-card)] p-6"
+                >
+                  <div className="relative flex-1">
+                    <Image src={p.image} alt={`${p.brand} ${p.name}`} fill sizes="(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw" className="object-contain p-4 transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-105" />
+                  </div>
+                  <div className="mt-4 flex items-end justify-between gap-4">
+                    <div>
+                      <p className="font-mono text-xs uppercase tracking-[0.1em] text-ink-600">{p.brand}</p>
+                      <p className="mt-1 text-lg font-semibold text-ink-950">{p.name}</p>
+                    </div>
+                    <span className="grid size-9 place-items-center rounded-full bg-ink-950 text-fog-50 transition-transform duration-500 group-hover:rotate-45">
+                      <ArrowUpRightIcon weight="bold" className="size-4" />
+                    </span>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
-        </Container>
-      </Section>
+        </section>
+      )}
+
+      {/* Fits + FAQ */}
+      <section aria-labelledby="faq-title" className="bg-ink-950 py-24 md:py-32">
+        <div className="container-x grid gap-16 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <h2 className="label text-fog-500" data-reveal>
+              Where it fits
+            </h2>
+            <ul className="mt-6 flex flex-wrap gap-2" data-reveal style={{ ['--d' as string]: 100 }}>
+              {s.fits.map((f) => (
+                <li key={f} className="rounded-full border border-white/12 px-4 py-2 text-fog-200">
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-10" data-reveal style={{ ['--d' as string]: 200 }}>
+              <Button href={`${PRIMARY_CTA.href}?solution=${s.slug}`}>{PRIMARY_CTA.label}</Button>
+            </div>
+          </div>
+          <div className="lg:col-span-7 lg:col-start-6">
+            <h2 id="faq-title" className="display text-[clamp(2rem,3.6vw,3.25rem)] text-fog-50" data-reveal>
+              Questions we hear
+            </h2>
+            <div className="mt-8 border-t border-white/[0.08]">
+              {s.faqs.map((f) => (
+                <details key={f.q} className="group border-b border-white/[0.08]" data-reveal>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-lg text-fog-50 [&::-webkit-details-marker]:hidden">
+                    {f.q}
+                    <span className="grid size-9 shrink-0 place-items-center rounded-full border border-white/15 transition-transform duration-500 group-open:rotate-45 group-open:border-signal-500 group-open:text-signal-500">
+                      <PlusIcon className="size-4" />
+                    </span>
+                  </summary>
+                  <p className="max-w-2xl pb-7 leading-relaxed text-fog-400">{f.a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Next practice */}
+      <section aria-label="Next solution" className="bg-ink-950 pb-8">
+        <div className="container-x">
+          <Link href={`/solutions/${next.slug}`} className="group relative flex min-h-[340px] items-end overflow-hidden rounded-[var(--radius-card)] border border-white/[0.06] p-8 md:min-h-[420px] md:p-12">
+            <Image src={next.image} alt="" fill sizes="100vw" className="zoom-img object-cover opacity-60" />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/50 to-transparent" />
+            <div className="relative flex w-full flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="label text-signal-400">Next solution</p>
+                <p className="display mt-4 text-[clamp(2.2rem,5vw,4.5rem)] text-fog-50">{next.title}</p>
+              </div>
+              <span className="grid size-16 shrink-0 place-items-center rounded-full bg-fog-50 text-ink-950 transition-[transform,background-color] duration-500 group-hover:rotate-45 group-hover:bg-signal-500">
+                <ArrowUpRightIcon weight="bold" className="size-6" />
+              </span>
+            </div>
+          </Link>
+        </div>
+      </section>
+
+      <CtaBand />
     </>
   );
 }

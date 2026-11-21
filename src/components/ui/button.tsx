@@ -1,115 +1,81 @@
+import { ArrowUpRightIcon } from '@phosphor-icons/react/ssr';
 import Link from 'next/link';
-import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react';
+import { type ComponentProps } from 'react';
 
 import { cn } from '@/lib/utils';
 
-/**
- * Button.
- *
- * Variant rules follow the binding colour rules in docs/DESIGN_SYSTEM.md §2:
- * the primary action is ink, not amber, and the amber `accent` variant appears
- * at most once per viewport. Amber fills always carry ink-900 text (7.4:1),
- * never white.
- *
- * Every size meets the 44px minimum touch target.
- */
+type Variant = 'primary' | 'ghost' | 'light';
 
-const base = [
-  'inline-flex items-center justify-center gap-2',
-  // Deliberately NOT `whitespace-nowrap`: a long label in a narrow stacked
-  // column pushed the page 27px wider than the viewport at 320px. Wrapping is
-  // preferable to horizontal scroll.
-  'font-medium text-center text-balance',
-  'rounded-sm border border-transparent',
-  'transition-[background-color,border-color,color,transform]',
-  'duration-[160ms] ease-[cubic-bezier(0.2,0,0,1)]',
-  'active:scale-[0.985]',
-  'disabled:pointer-events-none disabled:opacity-50',
-  'aria-disabled:pointer-events-none aria-disabled:opacity-50',
-].join(' ');
+const styles: Record<Variant, { base: string; dot: string }> = {
+  primary: {
+    base: 'bg-signal-500 text-ink-950 hover:bg-signal-400',
+    dot: 'bg-ink-950 text-signal-400',
+  },
+  ghost: {
+    base: 'border border-white/15 text-fog-50 hover:border-white/30 hover:bg-white/[0.04] backdrop-blur-md',
+    dot: 'bg-white/10 text-fog-50',
+  },
+  light: {
+    base: 'bg-fog-50 text-ink-950 hover:bg-white',
+    dot: 'bg-ink-950 text-fog-50',
+  },
+};
 
-const variants = {
-  primary: 'bg-ink-900 text-ink-0 hover:bg-ink-800',
-  accent: 'bg-amber-500 text-ink-900 hover:bg-amber-600',
-  secondary:
-    'bg-transparent text-ink-900 border-ink-300 hover:border-ink-900 hover:bg-ink-50',
-  ghost: 'bg-transparent text-ink-700 hover:bg-ink-50 hover:text-ink-900',
-  inverse: 'bg-ink-0 text-ink-900 hover:bg-ink-100',
-  outlineInverse:
-    'bg-transparent text-ink-0 border-ink-0/30 hover:border-ink-0 hover:bg-ink-0/10',
-} as const;
-
-/** `min-h` rather than a fixed height, so a wrapped label is not clipped. */
-const sizes = {
-  sm: 'min-h-9 px-3.5 py-1.5 text-[0.875rem]',
-  md: 'min-h-11 px-5 py-2.5 text-[0.9375rem]',
-  lg: 'min-h-13 px-7 py-3 text-[1rem]',
-} as const;
-
-export interface ButtonProps extends Omit<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  'className'
-> {
-  variant?: keyof typeof variants;
-  size?: keyof typeof sizes;
+interface ButtonProps extends Omit<ComponentProps<typeof Link>, 'className'> {
+  variant?: Variant;
   className?: string;
-  children: ReactNode;
+  size?: 'md' | 'lg';
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  function Button(
-    { variant = 'primary', size = 'md', className, children, ...props },
-    ref
-  ) {
-    return (
-      <button
-        ref={ref}
-        className={cn(base, variants[variant], sizes[size], className)}
-        {...props}
-      >
-        {children}
-      </button>
-    );
-  }
-);
-
-export interface ButtonLinkProps {
-  href: string;
-  variant?: keyof typeof variants;
-  size?: keyof typeof sizes;
-  className?: string;
-  children: ReactNode;
-  /** Set for links leaving the site. */
-  external?: boolean;
-}
-
-/** Anchor styled as a button. Used for navigation, never for actions. */
-export function ButtonLink({
-  href,
-  variant = 'primary',
-  size = 'md',
-  className,
-  children,
-  external = false,
-}: ButtonLinkProps) {
-  const classes = cn(base, variants[variant], sizes[size], className);
-
-  if (external) {
-    return (
-      <a
-        href={href}
-        className={classes}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {children}
-      </a>
-    );
-  }
-
+/** Pill button with a rotating arrow. One shape rule: buttons are always pills. */
+export function Button({ variant = 'primary', className, children, size = 'md', ...props }: ButtonProps) {
+  const s = styles[variant];
   return (
-    <Link href={href} className={classes}>
-      {children}
+    <Link
+      {...props}
+      className={cn(
+        'group/btn relative inline-flex select-none items-center gap-3 whitespace-nowrap rounded-full font-medium transition-colors duration-300 active:scale-[0.98]',
+        size === 'lg' ? 'h-14 pl-7 pr-2 text-base' : 'h-12 pl-6 pr-1.5 text-[0.95rem]',
+        s.base,
+        className,
+      )}
+    >
+      <span>{children}</span>
+      <span
+        className={cn(
+          'relative grid place-items-center overflow-hidden rounded-full',
+          size === 'lg' ? 'size-10' : 'size-9',
+          s.dot,
+        )}
+      >
+        <ArrowUpRightIcon
+          weight="bold"
+          className="size-4 transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover/btn:translate-x-6 group-hover/btn:-translate-y-6"
+        />
+        <ArrowUpRightIcon
+          weight="bold"
+          className="absolute size-4 -translate-x-6 translate-y-6 transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover/btn:translate-x-0 group-hover/btn:translate-y-0"
+        />
+      </span>
+    </Link>
+  );
+}
+
+/** Text link with an underline that draws in on hover. */
+export function TextLink({ className, children, ...props }: ComponentProps<typeof Link>) {
+  return (
+    <Link
+      {...props}
+      className={cn(
+        'group/tl inline-flex items-center gap-2 font-medium text-fog-50',
+        className,
+      )}
+    >
+      <span className="relative">
+        {children}
+        <span className="absolute -bottom-0.5 left-0 h-px w-full origin-right scale-x-0 bg-signal-500 transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover/tl:origin-left group-hover/tl:scale-x-100" />
+      </span>
+      <ArrowUpRightIcon weight="bold" className="size-4 text-signal-500 transition-transform duration-300 group-hover/tl:translate-x-0.5 group-hover/tl:-translate-y-0.5" />
     </Link>
   );
 }

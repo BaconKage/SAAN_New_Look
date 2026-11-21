@@ -1,56 +1,48 @@
-import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { PRIMARY_CTA } from '@/content/site';
 
-import { ButtonLink } from '@/components/ui/button';
-import { Container, Section } from '@/components/ui/section';
-import { primaryNavigation } from '@/config/navigation';
-import { buildMetadata } from '@/lib/metadata';
-
-export const metadata = buildMetadata({
-  title: 'Page not found',
-  description:
-    'The page you were looking for could not be found. Use the links below to reach our solutions, industries, services or contact details.',
-  path: '/404',
-  noindex: true,
-});
+/* 404 drawn the way an LED module would: a 3 x 5 dot font. */
+const GLYPHS: Record<string, string[]> = {
+  '4': ['#.#', '#.#', '###', '..#', '..#'],
+  '0': ['###', '#.#', '#.#', '#.#', '###'],
+};
 
 export default function NotFound() {
   return (
-    <Section spacing="xl">
-      <Container width="prose">
-        <p className="text-eyebrow text-amber-700">Error 404</p>
-        <h1 className="text-h1 mt-4">This page could not be found</h1>
-        <p className="text-body-lg mt-5 text-ink-600">
-          The address may have changed, or the page may have moved. Everything
-          on the site is reachable from the links below.
-        </p>
-
-        <div className="mt-10 flex flex-wrap gap-3">
-          <ButtonLink href="/" variant="primary">
-            Go to the homepage
-          </ButtonLink>
-          <ButtonLink href="/contact" variant="secondary">
-            Contact us
-          </ButtonLink>
+    <section className="relative flex min-h-[100dvh] items-center overflow-hidden bg-ink-950 pt-[var(--header-h)]">
+      <div className="led-field pointer-events-none absolute inset-0 opacity-40" />
+      <div className="container-x relative grid items-center gap-14 lg:grid-cols-2">
+        <div aria-hidden className="flex -skew-x-[10deg] gap-5">
+          {'404'.split('').map((ch, i) => (
+            <div key={i} className="grid grid-cols-3 gap-2">
+              {GLYPHS[ch]!.join('')
+                .split('')
+                .map((c, j) => (
+                  <span
+                    key={j}
+                    className={
+                      c === '#'
+                        ? 'size-[clamp(14px,3vw,30px)] rounded-[4px] bg-signal-500 shadow-[0_0_18px_rgba(224,138,0,0.55)]'
+                        : 'size-[clamp(14px,3vw,30px)] rounded-[4px] bg-white/[0.05]'
+                    }
+                  />
+                ))}
+            </div>
+          ))}
         </div>
-
-        <nav aria-labelledby="not-found-nav" className="mt-14">
-          <h2 id="not-found-nav" className="text-eyebrow text-ink-500">
-            Main sections
-          </h2>
-          <ul className="mt-5 grid gap-x-8 gap-y-3 sm:grid-cols-2">
-            {primaryNavigation.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="inline-flex min-h-[2.25rem] items-center text-[1rem] text-ink-700 underline underline-offset-4 transition-colors hover:text-amber-700"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </Container>
-    </Section>
+        <div>
+          <h1 className="display text-[clamp(2.6rem,5.5vw,5rem)] text-fog-50">No signal on this input.</h1>
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-fog-400">
+            The page you were looking for has moved or never existed. Let us get you back to a working source.
+          </p>
+          <div className="mt-10 flex flex-wrap gap-3">
+            <Button href="/">Back to home</Button>
+            <Button href={PRIMARY_CTA.href} variant="ghost">
+              {PRIMARY_CTA.label}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

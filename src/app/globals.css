@@ -1,0 +1,305 @@
+@import 'tailwindcss';
+
+/*
+ * SAAN design tokens.
+ * Theme: dark only (brand look). One accent: SAAN signal orange, from the logo.
+ * Shape rule: buttons and chips are full pills, media and cards use --radius-card (20px),
+ * inputs use 12px. Nothing else.
+ * Z-index scale: content 0, header 40, menu 50, dialog 60, loader 70, grain 80.
+ */
+@theme {
+  --color-ink-950: #08090b;
+  --color-ink-900: #0d0e11;
+  --color-ink-850: #121418;
+  --color-ink-800: #181a1f;
+  --color-ink-700: #24272e;
+  --color-ink-600: #33363e;
+  --color-fog-50: #f4f3f0;
+  --color-fog-200: #d6d5d2;
+  --color-fog-400: #a5a6aa;
+  --color-fog-500: #8b8c92;
+  --color-signal-300: #f7cf7e;
+  --color-signal-400: #f2a92e;
+  --color-signal-500: #e08a00;
+  --color-signal-600: #b86e00;
+  --color-studio-100: #eeeeef;
+  --color-studio-200: #e2e2e4;
+  --color-studio-300: #d0d0d3;
+
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius-card: 20px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --animate-marquee: marquee 50s linear infinite;
+  --animate-pulse-ring: pulse-ring 2.4s var(--ease-out-expo) infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(0.6);
+      opacity: 0.9;
+    }
+    100% {
+      transform: scale(2.4);
+      opacity: 0;
+    }
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --header-h: 72px;
+  }
+  html {
+    background: var(--color-ink-950);
+    color: var(--color-fog-50);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scrollbar-color: var(--color-ink-600) var(--color-ink-950);
+  }
+  body {
+    background: var(--color-ink-950);
+    font-family: var(--font-sans);
+    font-stretch: 100%;
+    overflow-x: clip;
+  }
+  ::selection {
+    background: var(--color-signal-500);
+    color: var(--color-ink-950);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-signal-400);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  img {
+    user-select: none;
+  }
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@layer components {
+  /* Wide display face. Archivo's width axis gives the engineered, broadcast feel. */
+  .display {
+    font-stretch: 118%;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+  }
+  .display-tight {
+    font-stretch: 112%;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+  }
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /*
+   * LED sign type: text is only visible through a grid of round "LEDs".
+   * The text-shadow is masked too, so neighbouring LEDs glow faintly, like bloom.
+   * --led sets the pitch; smaller screens use a finer pitch to stay legible.
+   */
+  .led-text {
+    --led: 4px;
+    color: var(--color-signal-500);
+    text-shadow: 0 0 14px rgb(224 138 0 / 0.55);
+    -webkit-mask-image: radial-gradient(circle at center, #000 calc(var(--led) * 0.3), transparent calc(var(--led) * 0.42));
+    mask-image: radial-gradient(circle at center, #000 calc(var(--led) * 0.3), transparent calc(var(--led) * 0.42));
+    -webkit-mask-size: var(--led) var(--led);
+    mask-size: var(--led) var(--led);
+  }
+  @media (min-width: 768px) {
+    .led-text {
+      --led: 6px;
+    }
+  }
+  /* Unlit LED grid behind LED-sign panels. */
+  .led-grid {
+    background-image: radial-gradient(circle at center, rgb(255 255 255 / 0.06) 1.1px, transparent 1.7px);
+    background-size: 4px 4px;
+  }
+  @media (min-width: 768px) {
+    .led-grid {
+      background-image: radial-gradient(circle at center, rgb(255 255 255 / 0.06) 1.6px, transparent 2.4px);
+      background-size: 6px 6px;
+    }
+  }
+  .container-x {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .container-x {
+      padding-inline: 2.5rem;
+    }
+  }
+  @media (min-width: 1280px) {
+    .container-x {
+      padding-inline: 3.5rem;
+    }
+  }
+
+  /* LED dot field used behind CTAs and page headers. */
+  .led-field {
+    background-image: radial-gradient(circle at center, rgb(255 255 255 / 0.11) 1.1px, transparent 1.6px);
+    background-size: 14px 14px;
+  }
+
+  /* Light studio surface for product photography; multiply hides white backgrounds. */
+  .studio {
+    background: radial-gradient(120% 90% at 50% 30%, var(--color-studio-100), var(--color-studio-300));
+  }
+  .studio img {
+    mix-blend-mode: multiply;
+  }
+
+  .hairline {
+    border-color: rgb(255 255 255 / 0.09);
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * Reveal system. Elements are hidden only once JS has marked <html class="js">,
+ * so the site is fully readable without JavaScript or with reduced motion.
+ * -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+    transition:
+      opacity 0.9s var(--ease-out-expo),
+      transform 1.1s var(--ease-out-expo);
+    transition-delay: calc(var(--d, 0) * 1ms);
+  }
+  .js [data-reveal='fade'] {
+    transform: none;
+  }
+  .js [data-reveal='scale'] {
+    transform: scale(0.96);
+  }
+  .js [data-reveal='clip'] {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(100% 0 0 0 round var(--radius-card));
+    transition: clip-path 1.3s var(--ease-in-out-quart);
+    transition-delay: calc(var(--d, 0) * 1ms);
+  }
+  .js [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+  .js [data-reveal='clip'].is-in {
+    clip-path: inset(0 0 0 0 round var(--radius-card));
+  }
+
+  /* Word-by-word headline reveal */
+  .js [data-split] .w {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+  .js [data-split] .w > span {
+    display: inline-block;
+    transform: translate3d(0, 105%, 0);
+    transition: transform 1.1s var(--ease-out-expo);
+    transition-delay: calc((var(--d, 0) + var(--i) * 55) * 1ms);
+  }
+  .js [data-split].is-in .w > span {
+    transform: none;
+  }
+}
+
+@keyframes fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes led-sweep {
+  from {
+    transform: translate3d(-40%, 0, 0);
+  }
+  to {
+    transform: translate3d(140%, 0, 0);
+  }
+}
+@keyframes word-in {
+  from {
+    transform: translate3d(0, 105%, 0);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes word-out {
+  from {
+    transform: none;
+    opacity: 1;
+  }
+  to {
+    transform: translate3d(0, -105%, 0);
+    opacity: 0;
+  }
+}
+
+/* Image zoom on hover inside groups */
+.zoom-img {
+  transition: transform 1.2s var(--ease-out-expo);
+}
+.group:hover .zoom-img {
+  transform: scale(1.05);
+}
+
+/* Film grain, fixed and non-interactive so it never repaints on scroll. */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 80;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

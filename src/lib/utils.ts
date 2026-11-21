@@ -1,21 +1,26 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-/** Merges class names, resolving conflicting Tailwind utilities. */
-export function cn(...inputs: ClassValue[]): string {
+export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/** Current year, computed — never hard-coded. */
-export function currentYear(): number {
-  return new Date().getFullYear();
+export function prefersReducedMotion() {
+  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-/** Converts a string to a URL-safe slug. */
-export function slugify(input: string): string {
-  return input
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+/** Event fired once the preloader has finished (or was skipped). */
+export const LOADED_EVENT = 'saan:loaded';
+
+export function isSiteLoaded() {
+  return typeof window !== 'undefined' && (window as unknown as { __saanLoaded?: boolean }).__saanLoaded === true;
+}
+
+export function onSiteLoaded(cb: () => void) {
+  if (isSiteLoaded()) {
+    cb();
+    return () => {};
+  }
+  window.addEventListener(LOADED_EVENT, cb, { once: true });
+  return () => window.removeEventListener(LOADED_EVENT, cb);
 }

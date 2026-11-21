@@ -1,229 +1,82 @@
-import { Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
+import { EnvelopeSimpleIcon, MapPinIcon, PhoneIcon, WhatsappLogoIcon } from '@phosphor-icons/react/ssr';
+import type { Metadata } from 'next';
+import { Suspense } from 'react';
 
+import { Planner } from '@/components/contact/planner';
 import { PageHeader } from '@/components/sections/page-header';
-import { ButtonLink } from '@/components/ui/button';
-import { ContentRequired } from '@/components/ui/content-required';
-import { Container, Section } from '@/components/ui/section';
-import {
-  formatPhoneForDisplay,
-  siteConfig,
-  telHref,
-  whatsappHref,
-} from '@/config/site';
-import { hasValue, isPublic, type SiteValue } from '@/lib/content-required';
-import { buildMetadata } from '@/lib/metadata';
+import { mailLink, site, telLink, whatsappLink } from '@/content/site';
 
-export const metadata = buildMetadata({
-  title: 'Contact SAAN',
-  description:
-    'Contact SAAN in Bengaluru to discuss an AV, meeting room, digital signage or display project, or to reach technical support for an installed system.',
-  path: '/contact',
-});
+export const metadata: Metadata = {
+  title: 'Contact',
+  description: `Plan your AV, video conferencing or signage project with SAAN Protocol Experts, Bengaluru. Call ${site.phone.display} or send us a brief.`,
+  alternates: { canonical: '/contact' },
+};
 
-/**
- * A contact row. Renders nothing at all unless the value is verified, so an
- * unconfirmed number or a missing email never appears as an empty labelled row.
- */
-function ContactRow({
-  icon,
-  label,
-  field,
-  href,
-  display,
-  detail,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  field: SiteValue;
-  href: string;
-  display: string;
-  detail?: string;
-}) {
-  if (!isPublic(field)) return null;
-
-  return (
-    <div className="flex gap-4 border-b border-ink-100 py-5 last:border-0">
-      <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-md border border-ink-200 bg-ink-25 text-amber-700">
-        {icon}
-      </span>
-      <div className="min-w-0">
-        <p className="text-eyebrow text-ink-500">{label}</p>
-        <div className="mt-2">
-          <a
-            href={href}
-            className="text-[1.0625rem] font-medium text-ink-900 underline-offset-4 hover:underline"
-            data-numeric
-          >
-            {display}
-          </a>
-        </div>
-        {detail ? (
-          <p className="mt-1.5 text-[0.875rem] text-ink-500">{detail}</p>
-        ) : null}
-      </div>
-    </div>
-  );
-}
+const channels = [
+  { icon: PhoneIcon, label: 'Call', value: site.phone.display, href: telLink },
+  { icon: WhatsappLogoIcon, label: 'WhatsApp', value: 'Chat with the team', href: whatsappLink('Hello SAAN, I would like to discuss a project.'), external: true },
+  { icon: EnvelopeSimpleIcon, label: 'Email', value: site.email, href: mailLink('Project enquiry') },
+];
 
 export default function ContactPage() {
-  const { contact, address } = siteConfig;
-  const salesValue = hasValue(contact.salesPhone)
-    ? contact.salesPhone.value
-    : '';
-
   return (
     <>
       <PageHeader
-        eyebrow="Contact"
-        title="Talk to someone who will ask the right questions"
-        lead="Whether you are planning a single room or an estate-wide programme, the fastest route is a short conversation about what the space has to do."
-        trail={[{ label: 'Contact', href: '/contact' }]}
+        title="Plan your project."
+        accent={['project.']}
+        intro="Three quick steps. Tell us what you are planning and we will come back with questions, a site visit and a proposal."
       />
 
-      <Section>
-        <Container>
-          <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-            <div className="lg:col-span-7">
-              <h2 className="text-h2">How to reach us</h2>
-
-              <div className="mt-8">
-                <ContactRow
-                  icon={
-                    <Phone
-                      width={17}
-                      height={17}
-                      strokeWidth={1.75}
-                      aria-hidden="true"
-                    />
-                  }
-                  label="Call us"
-                  field={contact.salesPhone}
-                  href={telHref(salesValue)}
-                  display={formatPhoneForDisplay(salesValue)}
-                  detail="New projects and support for installed systems."
-                />
-                <ContactRow
-                  icon={
-                    <MessageCircle
-                      width={17}
-                      height={17}
-                      strokeWidth={1.75}
-                      aria-hidden="true"
-                    />
-                  }
-                  label="WhatsApp"
-                  field={contact.whatsapp}
-                  href={whatsappHref(
-                    salesValue,
-                    'Hello SAAN, I would like to discuss an AV project.'
-                  )}
-                  display={formatPhoneForDisplay(salesValue)}
-                  detail="Send photographs of the space and we can start from there."
-                />
-                <ContactRow
-                  icon={
-                    <Mail
-                      width={17}
-                      height={17}
-                      strokeWidth={1.75}
-                      aria-hidden="true"
-                    />
-                  }
-                  label="Email"
-                  field={contact.salesEmail}
-                  href={`mailto:${contact.salesEmail.value ?? ''}`}
-                  display={contact.salesEmail.value ?? ''}
-                />
-              </div>
-
-              {/* Audit mode only — never rendered for visitors. */}
-              <div className="mt-6 flex flex-col items-start gap-2 empty:hidden">
-                <ContentRequired what="Confirmed sales email" />
-                <ContentRequired what="Confirmed support email" />
-                <ContentRequired what="Confirmed main telephone" />
-                <ContentRequired what="Confirmed support telephone" />
-              </div>
-
-              <div className="mt-10 rounded-md border border-ink-200 bg-ink-25 p-6">
-                <h3 className="text-h4 font-semibold">
-                  Prefer to send the requirement in writing?
-                </h3>
-                <p className="text-body-sm mt-3 text-ink-600">
-                  The project form captures the room, the platforms you use and
-                  the timeline, so the first conversation starts from something
-                  concrete rather than from a blank page.
-                </p>
-                <div className="mt-5">
-                  <ButtonLink href="/plan-your-project" variant="secondary">
-                    Plan your project
-                  </ButtonLink>
-                </div>
-              </div>
-            </div>
-
-            <div className="lg:col-span-5">
-              <div className="rounded-lg border border-ink-200 bg-ink-25 p-7">
-                <span className="grid size-9 place-items-center rounded-md border border-ink-200 bg-ink-0 text-amber-700">
-                  <MapPin
-                    width={17}
-                    height={17}
-                    strokeWidth={1.75}
-                    aria-hidden="true"
-                  />
-                </span>
-                <h2 className="text-h4 mt-5 font-semibold">
-                  Registered office
-                </h2>
-                <address className="mt-3 not-italic text-[0.9375rem] leading-relaxed text-ink-600">
-                  {siteConfig.legalName}
-                  <br />
-                  {address.line1}
-                  <br />
-                  {address.line2}
-                  <br />
-                  {address.locality} {address.postalCode}
-                  <br />
-                  {address.region}, {address.country}
-                </address>
-
-                {isPublic(siteConfig.businessHours) ? (
-                  <>
-                    <h3 className="text-eyebrow mt-8 text-ink-500">
-                      Business hours
-                    </h3>
-                    <p className="mt-3 text-[0.9375rem] text-ink-700">
-                      {siteConfig.businessHours.value}
-                    </p>
-                  </>
-                ) : (
-                  <ContentRequired
-                    className="mt-8"
-                    what="Confirmed business hours"
-                  />
-                )}
-              </div>
-
-              <div className="mt-6 rounded-lg border border-ink-200 p-7">
-                <h2 className="text-h4 font-semibold">
-                  Have a project in mind?
-                </h2>
-                <p className="mt-3 text-[0.9375rem] leading-relaxed text-ink-600">
-                  Sending the requirement first means the conversation starts
-                  with the room rather than with a catalogue.
-                </p>
-                <div className="mt-6 flex flex-col gap-3">
-                  <ButtonLink href="/plan-your-project" variant="primary">
-                    Plan your project
-                  </ButtonLink>
-                  <ButtonLink href="/support" variant="secondary">
-                    Request technical support
-                  </ButtonLink>
-                </div>
-              </div>
-            </div>
+      <section aria-label="Project planner and contact details" className="bg-ink-950 pb-28 md:pb-36">
+        <div className="container-x grid gap-10 lg:grid-cols-12">
+          <div className="lg:col-span-7" data-reveal>
+            <Suspense fallback={<div className="h-[560px] rounded-[var(--radius-card)] border border-white/[0.08] bg-ink-900" />}>
+              <Planner />
+            </Suspense>
           </div>
-        </Container>
-      </Section>
+
+          <aside className="space-y-4 lg:col-span-4 lg:col-start-9" data-reveal style={{ ['--d' as string]: 150 }}>
+            <h2 className="label text-fog-500">Or reach us directly</h2>
+            {channels.map((c) => (
+              <a
+                key={c.label}
+                href={c.href}
+                target={c.external ? '_blank' : undefined}
+                rel={c.external ? 'noopener noreferrer' : undefined}
+                className="group flex items-center gap-5 rounded-2xl border border-white/[0.08] p-5 transition-colors duration-300 hover:border-signal-500/60 hover:bg-white/[0.02]"
+              >
+                <span className="grid size-12 shrink-0 place-items-center rounded-full bg-white/[0.05] text-signal-400 transition-colors duration-300 group-hover:bg-signal-500 group-hover:text-ink-950">
+                  <c.icon className="size-5" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-sm text-fog-500">{c.label}</span>
+                  <span className="block truncate text-lg text-fog-50">{c.value}</span>
+                </span>
+              </a>
+            ))}
+
+            <div className="overflow-hidden rounded-2xl border border-white/[0.08]">
+              <iframe
+                title="SAAN Protocol Experts office on the map"
+                src={site.address.embedUrl}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="block h-[240px] w-full grayscale invert-[0.92] hue-rotate-180"
+              />
+              <a href={site.address.mapsUrl} target="_blank" rel="noopener noreferrer" className="flex gap-3 bg-ink-900 p-5 text-fog-200 transition-colors hover:text-fog-50">
+                <MapPinIcon className="mt-1 size-5 shrink-0 text-signal-500" />
+                <span className="text-sm leading-relaxed">
+                  {site.address.lines.map((l) => (
+                    <span key={l} className="block">
+                      {l}
+                    </span>
+                  ))}
+                </span>
+              </a>
+            </div>
+          </aside>
+        </div>
+      </section>
     </>
   );
 }

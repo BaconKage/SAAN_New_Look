@@ -1,54 +1,33 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect } from 'react';
 
-import { Button, ButtonLink } from '@/components/ui/button';
-import { Container, Section } from '@/components/ui/section';
-
-/**
- * Route-level error boundary.
- *
- * The real error is never shown to the visitor. It is logged so it reaches the
- * platform's error reporting, and the visitor is given a way forward — a retry
- * and a phone number, because someone who hit an error on an enquiry page still
- * needs to reach SAAN.
- */
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
+/** Branded fallback if a page throws while rendering. */
+export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
     console.error(error);
   }, [error]);
 
   return (
-    <Section spacing="xl">
-      <Container width="prose">
-        <p className="text-eyebrow text-amber-700">Something went wrong</p>
-        <h1 className="text-h1 mt-4">This page could not be loaded</h1>
-        <p className="text-body-lg mt-5 text-ink-600">
-          The problem has been logged. Please try again — and if it keeps
-          happening, contact us directly and we will help.
-        </p>
-
+    <section className="relative flex min-h-[100dvh] items-center bg-ink-950 pt-[var(--header-h)]">
+      <div className="led-field pointer-events-none absolute inset-0 opacity-40" />
+      <div className="container-x relative">
+        <h1 className="display max-w-[16ch] text-[clamp(2.6rem,5.5vw,5rem)] text-fog-50">Signal interrupted.</h1>
+        <p className="mt-6 max-w-md text-lg leading-relaxed text-fog-400">Something went wrong loading this page. Try again, or head back to the home page.</p>
         <div className="mt-10 flex flex-wrap gap-3">
-          <Button onClick={reset} variant="primary">
+          <button
+            type="button"
+            onClick={reset}
+            className="inline-flex h-12 items-center rounded-full bg-signal-500 px-6 font-medium text-ink-950 transition-colors hover:bg-signal-400"
+          >
             Try again
-          </Button>
-          <ButtonLink href="/contact" variant="secondary">
-            Contact us
-          </ButtonLink>
+          </button>
+          <Link href="/" className="inline-flex h-12 items-center rounded-full border border-white/15 px-6 font-medium text-fog-50 transition-colors hover:bg-white/5">
+            Back to home
+          </Link>
         </div>
-
-        {error.digest ? (
-          <p className="mt-10 font-mono text-[0.8125rem] text-ink-500">
-            Reference: {error.digest}
-          </p>
-        ) : null}
-      </Container>
-    </Section>
+      </div>
+    </section>
   );
 }

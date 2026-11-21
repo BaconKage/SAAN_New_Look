@@ -1,87 +1,51 @@
-# SAAN website
+# SAAN Protocol Experts website
 
-New website for **Saan Protocol Experts Private Limited** — a greenfield build,
-independent of the existing WordPress site.
+Corporate website for SAAN Protocol Experts Private Limited (Bengaluru): enterprise AV, video conferencing, LED video walls, professional audio, smart classrooms and support.
 
-> The live site at `saanpro.com` is untouched. No DNS, hosting or email change
-> happens without explicit written approval.
+## Stack
 
-## Quick start
+- Next.js 16 (App Router, fully static output) and React 19
+- Tailwind CSS 4 (design tokens in `src/app/globals.css`)
+- GSAP + ScrollTrigger for scroll choreography, Lenis for smooth scrolling
+- Raw WebGL (no library) for the LED-wall hero, `src/components/hero/led-renderer.ts`
+- Phosphor icons, Archivo (variable width) and Geist Mono via `next/font`
+
+## Run it
 
 ```bash
 npm install
-npm run dev
+npm run dev      # http://localhost:3000
+npm run verify   # lint, typecheck and production build
 ```
 
-The application runs with **no environment configuration at all**. Copy
-`.env.example` to `.env.local` only when you need a non-default site URL.
+## Where things live
 
-## Commands
-
-| Command | What it does |
+| Path | What |
 |---|---|
-| `npm run dev` | Development server |
-| `npm run build` | Production build |
-| `npm run start` | Serve the production build |
-| `npm run lint` | ESLint |
-| `npm run typecheck` | TypeScript, strict + `noUncheckedIndexedAccess` |
-| `npm run format` / `format:check` | Prettier |
-| `npm run test:unit` | Vitest — tokens, content, routes, config |
-| `npm run test:e2e` | Playwright — all projects |
-| `npm run test:a11y` | axe accessibility sweep only |
-| `npm run validate:content` | Parse all content through its Zod schema |
-| `npm run audit:content` | List unresolved `[CONTENT REQUIRED]` items |
-| `npm run lhci` | Lighthouse CI |
-| `npm run verify` | lint → typecheck → validate → unit → build |
+| `src/content/site.ts` | Company name, phone, email, address. Edit contact details here only. |
+| `src/content/solutions.ts` | The eight solution pages (copy, capabilities, typical system, FAQs) |
+| `src/content/products.ts` | Product catalogue |
+| `src/content/home.ts` | Hero scenes, room configurator hotspots, process, industries, logos, references, recognition |
+| `src/components/hero/` | WebGL LED-wall hero and its renderer |
+| `src/components/home/` | Home page sections |
+| `src/components/layout/` | Header (mega menu, mobile menu), footer, preloader |
+| `public/images/` | Photography, product shots, brand logos, OG image |
 
-## Architecture
+## Signature interactions
 
-**Content adapter.** Every page reads content through the `ContentSource`
-interface in `src/content/source/`. A local implementation backed by typed
-modules ships today; a Sanity implementation drops in behind the same interface
-later. The application builds and runs with no CMS credentials, so content
-delivery is never on the critical path.
+- **Preloader** (about 3 s): LED cabinets fly in from depth and assemble into a wall the size of the screen, the seams flash and close, the wall writes "SAAN", then the camera dives into one lit LED and into the hero. Plays on every full page load (including refresh), never on in-site navigation, and is skipped under reduced motion. Timings live in `TIMELINE` in `src/components/layout/loader-wall.ts`.
+- **LED-wall hero**: the hero is a wall of live LED cabinets showing each scene in SAAN amber. Scenes change with the cabinets flipping over in a wave, each carrying the next scene on its back, and cabinets near the cursor lift and tilt slightly.
+- **Horizontal solutions gallery**: vertical scroll pans the eight practices sideways (swipe on mobile).
+- **Room configurator**: pick a room type and see where each component goes, with hotspots linked to the system list.
+- **Project planner**: three-step brief on the Contact page that opens WhatsApp or email pre-filled. There is no server form handler yet.
 
-**Schemas are the contract.** Zod schemas in `src/content/schemas/` are shared
-by the local source, the CMS and the validation scripts, so a record that would
-break a page cannot be published from either side.
+All motion respects `prefers-reduced-motion`, and content is readable without JavaScript.
 
-**Central configuration.** Every company detail — legal name, address, phone
-numbers, emails, social profiles, canonical domain — lives in
-`src/config/site.ts`. An ESLint rule fails the build if a phone number or the
-domain is written literally anywhere else.
+## Before launch
 
-**Content integrity.** Facts SAAN has not confirmed are represented by visible
-`[CONTENT REQUIRED]` markers, never by invented values. `npm run audit:content`
-lists them; the launch build fails while any remain.
-
-```
-src/
-├── app/            routes, sitemap, robots, error and 404 states
-├── components/     layout, navigation, sections, cards, ui, media, interactive
-├── config/         site.ts, navigation.ts, routes.ts
-├── content/        schemas (Zod) · data (local) · source (adapter)
-├── lib/            metadata, redirects, analytics, content-required, utils
-├── styles/         tokens.css, globals.css
-└── tests/          unit (Vitest) · e2e (Playwright)
-docs/               planning, design, content, SEO and launch documentation
-```
-
-## Design system
-
-The palette is derived from SAAN's own logo — `#E38700` amber with near-black —
-rather than invented. Full token set and the binding contrast rules are in
-[`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md).
-
-Two rules are enforced by tests rather than convention:
-
-- Amber-500 is a **fill**, never text (2.72:1 on white) and never a focus ring.
-  Focus uses amber-600 on light, amber-400 on dark.
-- Container widths are named `--layout-*`. `--container-*` is a reserved
-  Tailwind v4 namespace that silently redefines `w-full`.
-
-## Documentation
-
-Planning and launch documentation lives in [`docs/`](docs/) — start with
-[`PROJECT_PLAN.md`](docs/PROJECT_PLAN.md). Outstanding content and decisions
-requiring SAAN are tracked in [`CONTENT_TODO.md`](docs/CONTENT_TODO.md).
+- Confirm permission to publish each reference name in `src/content/home.ts` (`references`) and the two recognition entries.
+- Confirm `varda@saanpro.com` should be the public enquiry address.
+- Replace the type-set wordmark in `src/components/brand/logo.tsx` with the master SAAN vector logo if one exists.
+- Product photos are manufacturer images; check each OEM's reseller media terms. See `docs/IMAGE_CREDITS.md`.
+- Set `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_SITE_ENV=production` on the production host (otherwise pages send `noindex`).
+- Legacy saanpro.com URLs are redirected in `next.config.ts` (that file is authoritative; the older plans in `docs/` predate this rebuild and use earlier page slugs).
