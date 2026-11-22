@@ -276,6 +276,37 @@ html.lenis body {
   }
 }
 
+/* System diagrams: amber signal dots flowing along a link, and speech waves
+   spreading from the lectern. Under reduced motion the global rule below
+   stops both, leaving static dots and rings. */
+.signal-flow {
+  stroke-dasharray: 0.001 14;
+  animation: signal-flow 1.3s linear infinite;
+}
+@keyframes signal-flow {
+  to {
+    stroke-dashoffset: -14.001;
+  }
+}
+.sound-wave {
+  opacity: 0.35;
+  transform-box: view-box;
+  animation: sound-wave 3.3s var(--ease-out-expo) infinite;
+}
+@keyframes sound-wave {
+  from {
+    opacity: 0;
+    transform: scale(0.08);
+  }
+  20% {
+    opacity: 0.75;
+  }
+  to {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
 /* Image zoom on hover inside groups */
 .zoom-img {
   transition: transform 1.2s var(--ease-out-expo);

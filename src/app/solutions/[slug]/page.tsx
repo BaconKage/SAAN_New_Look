@@ -8,8 +8,10 @@ import { Parallax } from '@/components/motion/parallax';
 import { Split } from '@/components/motion/split';
 import { CtaBand } from '@/components/sections/cta-band';
 import { ProjectStrip } from '@/components/sections/project-showcase';
+import { SystemSection } from '@/components/solutions/system-diagram';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
+import { diagrams } from '@/content/diagrams';
 import { getProducts } from '@/content/products';
 import { PRIMARY_CTA } from '@/content/site';
 import { getSolution, solutions } from '@/content/solutions';
@@ -129,50 +131,8 @@ export default async function SolutionPage({ params }: { params: Promise<{ slug:
 
       {s.project && <ProjectStrip id={s.project.id} photos={s.project.photos} />}
 
-      {/* Typical system, drawn as a rack */}
-      <section aria-labelledby="sys-title" className="border-t border-white/[0.07] bg-ink-950 py-24 md:py-32">
-        <div className="container-x grid gap-14 lg:grid-cols-12">
-          <div className="lg:col-span-4">
-            <div className="lg:sticky lg:top-32">
-              <h2 id="sys-title" className="display text-[clamp(2.2rem,4.4vw,4rem)] text-fog-50" data-reveal>
-                Inside a typical system
-              </h2>
-              <p className="mt-5 max-w-sm leading-relaxed text-fog-400" data-reveal style={{ ['--d' as string]: 100 }}>
-                Every project is designed for its room. These are the building blocks we usually start from, and brands we often specify.
-              </p>
-            </div>
-          </div>
-          <ol className="space-y-3 lg:col-span-8">
-            {s.system.map((row, i) => (
-              <li
-                key={row.role}
-                data-reveal
-                style={{ ['--d' as string]: i * 80 }}
-                className="group relative grid grid-cols-[auto_1fr] items-center gap-x-5 gap-y-4 overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-b from-ink-800 to-ink-850 py-5 pl-4 pr-6 md:grid-cols-[auto_1.1fr_1fr]"
-              >
-                <span aria-hidden className="flex h-full flex-col justify-between py-1">
-                  <span className="size-2.5 rounded-full border border-white/20" />
-                  <span className="size-2.5 rounded-full border border-white/20" />
-                </span>
-                <div>
-                  <p className="flex items-center gap-3 text-lg font-semibold text-fog-50" style={{ fontStretch: '108%' }}>
-                    <span aria-hidden className="size-1.5 rounded-full bg-fog-500 transition-colors duration-300 group-hover:bg-signal-500 group-hover:shadow-[0_0_10px_rgb(224_138_0)]" />
-                    {row.role}
-                  </p>
-                  <p className="mt-1 text-[0.95rem] leading-relaxed text-fog-400">{row.detail}</p>
-                </div>
-                <ul className="col-span-2 flex flex-wrap gap-2 md:col-span-1 md:justify-end">
-                  {row.brands.map((b) => (
-                    <li key={b} className="rounded-full border border-white/10 bg-ink-950/60 px-3 py-1 font-mono text-xs text-fog-200">
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+      {/* Typical system, drawn as an architecture diagram with a numbered key */}
+      <SystemSection diagram={diagrams[s.slug]!} rows={s.system} />
 
       {/* Related products */}
       {related.length > 0 && (

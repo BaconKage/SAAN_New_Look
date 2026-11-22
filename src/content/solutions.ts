@@ -24,7 +24,22 @@ export type IconKey =
   | 'armchair'
   | 'desk'
   | 'wall'
-  | 'blueprint';
+  | 'blueprint'
+  | 'cloud'
+  | 'laptop'
+  | 'lightbulb'
+  | 'student'
+  | 'presentation'
+  | 'film'
+  | 'server'
+  | 'play'
+  | 'projector'
+  | 'ear'
+  | 'refresh'
+  | 'clipboard'
+  | 'lifebuoy'
+  | 'frame'
+  | 'globe';
 
 export interface Solution {
   slug: string;
@@ -334,6 +349,7 @@ export const solutions: Solution[] = [
     ],
     system: [
       { role: 'Preventive visits', detail: 'Scheduled health checks and cleaning.', brands: ['All installed brands'] },
+      { role: 'Updates & tuning', detail: 'Firmware, audio re-tuning and configuration checks.', brands: ['Vendor management portals'] },
       { role: 'Breakdown response', detail: 'Troubleshooting on call and on site.', brands: ['Multi-brand'] },
       { role: 'Warranty coordination', detail: 'Logging and following up OEM cases.', brands: ['Manufacturer warranty'] },
     ],

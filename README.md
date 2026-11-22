@@ -36,6 +36,7 @@ The site is plain static files, so there is no server to run or patch.
 | `src/content/site.ts` | Company name, phone, email, address. Edit contact details here only. |
 | `src/content/solutions.ts` | The nine solution pages (copy, capabilities, typical system, FAQs) |
 | `src/content/projects.ts` | Delivered work with SAAN's own site photos (IISc), shown on the home page and on solution pages |
+| `src/content/diagrams.ts` | The "Inside a typical system" diagram for each solution page (signal flow, room cutaway or service loop) |
 | `src/content/products.ts` | Product catalogue |
 | `src/content/home.ts` | Hero scenes, room configurator hotspots, process, industries, logos, references, recognition |
 | `src/components/hero/` | WebGL LED-wall hero and its renderer |
@@ -49,6 +50,7 @@ The site is plain static files, so there is no server to run or patch.
 - **LED-wall hero**: the hero is a wall of live LED cabinets showing each scene in SAAN amber. Scenes change with the cabinets flipping over in a wave, each carrying the next scene on its back, and cabinets near the cursor lift and tilt slightly.
 - **Horizontal solutions gallery**: vertical scroll pans the nine practices sideways (swipe on mobile).
 - **Room configurator**: pick a room type and see where each component goes, with hotspots linked to the system list.
+- **System diagrams**: every solution page draws its typical system as an architecture diagram with amber signal dots flowing along the links, numbered to match the component key below it; hovering either highlights the other. Phones get a vertical layout.
 - **Project planner**: three-step brief on the Contact page that opens WhatsApp or email pre-filled. There is no server form handler yet.
 
 All motion respects `prefers-reduced-motion`, and content is readable without JavaScript.
