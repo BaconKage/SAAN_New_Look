@@ -22,7 +22,7 @@ const timeline = [
   { year: 'Early years', title: 'Three technology divisions', text: 'Test and measurement for R&D labs, IT infrastructure services and electronic component supply for engineering teams.' },
   { year: '2015', title: 'Lifesize Partner Program', text: 'Video conferencing becomes a core practice as hybrid collaboration grows.' },
   { year: '2017', title: 'APAC Partner Enablement Award', text: 'Recognition for partner enablement in the Asia-Pacific region.' },
-  { year: 'Today', title: 'Enterprise AV and collaboration', text: 'Boardrooms, video walls, auditoriums, classrooms and support contracts for corporate, education and institutional clients.' },
+  { year: 'Today', title: 'Enterprise AV and collaboration', text: 'Boardrooms, video walls, auditoriums, classrooms, acoustics and interiors, and support contracts for corporate, education and institutional clients.' },
 ];
 
 const principles = [

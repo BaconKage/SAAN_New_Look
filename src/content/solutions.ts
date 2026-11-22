@@ -1,3 +1,5 @@
+import type { ProjectId } from './projects';
+
 export type IconKey =
   | 'video'
   | 'monitor'
@@ -16,7 +18,13 @@ export type IconKey =
   | 'sliders'
   | 'lightning'
   | 'users'
-  | 'chart';
+  | 'chart'
+  | 'waveform'
+  | 'tiles'
+  | 'armchair'
+  | 'desk'
+  | 'wall'
+  | 'blueprint';
 
 export interface Solution {
   slug: string;
@@ -33,6 +41,8 @@ export interface Solution {
   fits: string[];
   products: string[];
   faqs: { q: string; a: string }[];
+  /** Delivered work to show on the page, with the photos to use. */
+  project?: { id: ProjectId; photos: string[] };
 }
 
 export const solutions: Solution[] = [
@@ -234,7 +244,44 @@ export const solutions: Solution[] = [
     products: ['sharp-pn-lc752', 'logitech-rally-bar-mini', 'sennheiser-tcc2'],
     faqs: [
       { q: 'Which interactive display brand should we choose?', a: 'It depends on your software, budget and support needs. We work across several brands and recommend one based on how your teachers will use it.' },
+      { q: 'Can you fit out the whole classroom, not just the technology?', a: 'Yes. We deliver classrooms and seminar halls turnkey, with acoustic treatment, flooring, desks and seating alongside the AV, as we have across more than 35 departments at IISc Bengaluru.' },
     ],
+    project: { id: 'iisc', photos: ['seminar', 'classroom', 'lectern'] },
+  },
+  {
+    slug: 'acoustics-interiors',
+    title: 'Acoustics & Interiors',
+    short: 'Acoustics & interiors',
+    line: 'Acoustic treatment, flooring, furniture and fit-out, delivered with the AV as one turnkey project.',
+    image: '/images/projects/iisc-conference-room.jpg',
+    intro:
+      'A room only works when it sounds right and seats people well. We take on the interior side of a project alongside the technology: acoustic treatment, flooring, ceilings, furniture and partitions. Classrooms, seminar halls and offices are handed over complete, with one team accountable from the first drawing to the last cable.',
+    outcomes: [
+      'Speech that stays clear, without echo or boom',
+      'Seating and layouts planned around sightlines to the screen',
+      'One turnkey contract instead of separate interior and AV vendors',
+    ],
+    capabilities: [
+      { icon: 'waveform', title: 'Acoustic treatment', text: 'Wall panels, wooden slats, fabric and PET panels specified to bring echo and reverberation under control.' },
+      { icon: 'tiles', title: 'Flooring & ceilings', text: 'Wooden flooring, carpet and acoustic ceiling tiles, coordinated with projectors, speakers and cabling.' },
+      { icon: 'armchair', title: 'Classroom & seminar seating', text: 'Desks, tablet-arm chairs, lecterns and conference tables laid out for clear sightlines.' },
+      { icon: 'desk', title: 'Labs & workstations', text: 'Lab benches, workstations and storage for research labs, computer labs and open offices.' },
+      { icon: 'wall', title: 'Partitions & discussion rooms', text: 'Partitions, cabins and small discussion rooms carved out of open floors.' },
+      { icon: 'blueprint', title: 'Turnkey delivery', text: 'Layout drawings, BOQ, site execution and handover by one team, with the AV installed into the finished room.' },
+    ],
+    system: [
+      { role: 'Wall acoustics', detail: 'Absorptive panels or slats on the surfaces that reflect speech.', brands: ['Wooden acoustic slats', 'Acoustic PET panels', 'Fabric panels'] },
+      { role: 'Ceiling', detail: 'Acoustic tiles that absorb sound and conceal services.', brands: ['Glass-fibre tegular tiles', 'Grid ceilings'] },
+      { role: 'Flooring', detail: 'Hard-wearing floors suited to the room and its acoustics.', brands: ['Wooden flooring', 'Carpet tiles'] },
+      { role: 'Furniture', detail: 'Seating, desks and tables sized to the room layout.', brands: ['Tablet-arm chairs', 'Lecterns', 'Conference tables', 'Workstations'] },
+    ],
+    fits: ['Classrooms', 'Seminar halls', 'Auditoriums', 'Conference rooms', 'Research labs', 'Open offices'],
+    products: [],
+    faqs: [
+      { q: 'Can you fix echo in a room that is already finished?', a: 'Usually, yes. Wall panels, slats and ceiling tiles can be added to an existing room. We assess it first and treat the surfaces that matter most for speech.' },
+      { q: 'Do you take on interiors without the AV?', a: 'Yes. We can deliver acoustic treatment or fit-out on its own, though rooms work best when interiors and AV are planned together.' },
+    ],
+    project: { id: 'iisc', photos: ['lectern', 'desks', 'seating'] },
   },
   {
     slug: 'control-automation',

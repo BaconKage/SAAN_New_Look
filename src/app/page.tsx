@@ -8,6 +8,7 @@ import { References } from '@/components/home/references';
 import { RoomConfigurator } from '@/components/home/room-configurator';
 import { SolutionsPan } from '@/components/home/solutions-pan';
 import { CtaBand } from '@/components/sections/cta-band';
+import { ProjectSpotlight } from '@/components/sections/project-showcase';
 
 export default function HomePage() {
   return (
@@ -21,6 +22,7 @@ export default function HomePage() {
       <ProductsBento />
       <Industries />
       <References />
+      <ProjectSpotlight />
       <CtaBand />
     </>
   );

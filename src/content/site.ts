@@ -11,7 +11,7 @@ export const site = {
   shortLegalName: 'SAAN Protocol Experts Pvt. Ltd.',
   tagline: 'Aligning Technology and Enterprise',
   description:
-    'SAAN Protocol Experts designs, supplies, integrates and supports boardrooms, video conferencing, LED video walls, professional audio, digital signage and smart classrooms for enterprises and institutions across India.',
+    'SAAN Protocol Experts designs, supplies, integrates and supports boardrooms, video conferencing, LED video walls, professional audio, digital signage, smart classrooms, and acoustics and interiors for enterprises and institutions across India.',
   founded: 2007,
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/$/, ''),
   phone: {

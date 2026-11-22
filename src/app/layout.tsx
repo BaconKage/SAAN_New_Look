@@ -39,6 +39,8 @@ export const metadata: Metadata = {
     'digital signage',
     'smart classroom',
     'professional audio',
+    'acoustic treatment',
+    'classroom interiors',
     'Microsoft Teams Rooms',
     'AMC AV support',
   ],

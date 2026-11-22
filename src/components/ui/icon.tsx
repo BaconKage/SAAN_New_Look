@@ -1,5 +1,11 @@
 import {
+  ArmchairIcon,
+  BlueprintIcon,
   BroadcastIcon,
+  DeskIcon,
+  GridFourIcon,
+  WallIcon,
+  WaveformIcon,
   PlugsIcon,
   CalendarCheckIcon,
   ChalkboardTeacherIcon,
@@ -40,6 +46,12 @@ const map = {
   lightning: LightningIcon,
   users: UsersThreeIcon,
   chart: ChartLineUpIcon,
+  waveform: WaveformIcon,
+  tiles: GridFourIcon,
+  armchair: ArmchairIcon,
+  desk: DeskIcon,
+  wall: WallIcon,
+  blueprint: BlueprintIcon,
 } satisfies Record<IconKey, unknown>;
 
 export function Icon({ name, className }: { name: IconKey; className?: string }) {

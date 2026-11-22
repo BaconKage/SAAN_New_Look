@@ -79,7 +79,7 @@ export function SolutionsPan() {
               id="solutions-title"
               className="display max-w-[16ch] text-[clamp(2.5rem,5.2vw,5rem)] text-fog-50"
             >
-              Eight practices.{' '}
+              Nine practices.{' '}
               <span className="italic text-signal-500">One integrator.</span>
             </h2>
             <TextLink href="/solutions" className="shrink-0">

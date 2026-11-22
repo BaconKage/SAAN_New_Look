@@ -63,3 +63,7 @@ Shown next to each reference name in the "Trusted by" section. All are trademark
 | itcinfotech, homelane, himatsingka, kmf, kscst, jss, manipalglobal | Each organisation's own website header logo |
 
 Files were trimmed and resized to 240px tall. The Himatsingka logo is white, so it sits on a dark plate, with a "Great Place to Work" badge cropped off.
+
+## Project photos (`public/images/projects`)
+
+SAAN's own photographs of delivered work at the Indian Institute of Science, Bengaluru, taken from the company presentation ("saan ppt1 latest", slides 18–23). They were brightened slightly, cropped where the lens hood darkened a corner, and stripped of camera metadata. Confirm IISc is happy to be named and shown before launch, as with the client logos.

@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 export const metadata: Metadata = {
   title: 'Solutions',
   description:
-    'Boardrooms, video conferencing, LED video walls, digital signage, professional audio, smart classrooms, control systems and AMC support from SAAN Protocol Experts, Bengaluru.',
+    'Boardrooms, video conferencing, LED video walls, digital signage, professional audio, smart classrooms, acoustics and interiors, control systems and AMC support from SAAN Protocol Experts, Bengaluru.',
   alternates: { canonical: '/solutions' },
 };
 
@@ -26,7 +26,7 @@ export default function SolutionsPage() {
         title="Every room, designed as one system."
         accent={['one', 'system.']}
         image="/images/photos/led-person.jpg"
-        intro="Eight practices, delivered by one team: from the first survey and drawing to installation, training and years of support."
+        intro="Nine practices, delivered by one team: from the first survey and drawing to installation, training and years of support."
       />
 
       <section aria-label="All solutions" className="bg-ink-950 pb-28 md:pb-36">
@@ -39,7 +39,8 @@ export default function SolutionsPage() {
               style={{ ['--d' as string]: (i % 2) * 120 }}
               className={cn(
                 'group relative flex min-h-[420px] flex-col justify-end overflow-hidden rounded-[var(--radius-card)] border border-white/[0.06] md:min-h-[520px]',
-                spans[i % 4],
+                // An odd last card takes the full row instead of leaving a gap.
+                i === solutions.length - 1 && solutions.length % 2 === 1 ? 'md:col-span-12' : spans[i % 4],
               )}
             >
               <Image src={s.image} alt="" fill sizes="(min-width: 768px) 58vw, 100vw" className="zoom-img object-cover" />

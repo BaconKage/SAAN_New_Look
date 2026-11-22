@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation';
 import { Parallax } from '@/components/motion/parallax';
 import { Split } from '@/components/motion/split';
 import { CtaBand } from '@/components/sections/cta-band';
+import { ProjectStrip } from '@/components/sections/project-showcase';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { getProducts } from '@/content/products';
@@ -126,8 +127,10 @@ export default async function SolutionPage({ params }: { params: Promise<{ slug:
         </div>
       </section>
 
+      {s.project && <ProjectStrip id={s.project.id} photos={s.project.photos} />}
+
       {/* Typical system, drawn as a rack */}
-      <section aria-labelledby="sys-title" className="bg-ink-950 py-24 md:py-32">
+      <section aria-labelledby="sys-title" className="border-t border-white/[0.07] bg-ink-950 py-24 md:py-32">
         <div className="container-x grid gap-14 lg:grid-cols-12">
           <div className="lg:col-span-4">
             <div className="lg:sticky lg:top-32">
