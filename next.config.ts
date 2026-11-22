@@ -1,74 +1,40 @@
 import type { NextConfig } from 'next';
 
+import imageSizes from './src/lib/image-sizes.json';
+
 /**
- * Legacy WordPress URLs from saanpro.com, mapped onto the new site so existing
- * links and search rankings carry over when the domain is switched.
+ * The site is a fully static export (`out/`) served by Cloudflare Workers static
+ * assets. Legacy WordPress redirects and security headers live in
+ * public/_redirects and public/_headers, which Cloudflare reads at the edge.
+ *
+ * Build environment: Cloudflare's builder sets WORKERS_CI_BRANCH (Workers) or
+ * CF_PAGES_BRANCH (Pages). A build of `main` there is production and any other
+ * branch is a preview; everywhere else it is development. NEXT_PUBLIC_SITE_ENV
+ * and NEXT_PUBLIC_SITE_URL override both. Anything but production is noindex.
  */
-const SOL = '/solutions';
-const legacyRedirects: Array<[string, string]> = [
-  ['/about-us', '/about'],
-  ['/contact-us', '/contact'],
-  ['/awards', '/about#recognition'],
-  ['/audio-systems', `${SOL}/professional-audio`],
-  ['/av-accessories', '/products'],
-  ['/av-mounting-kits', '/products'],
-  ['/displays', '/products'],
-  ['/projector', '/products'],
-  ['/screen', '/products'],
-  ['/video-conferences', `${SOL}/video-conferencing`],
-  ['/vc-solutions', `${SOL}/video-conferencing`],
-  ['/cloud-vc', `${SOL}/video-conferencing`],
-  ['/meeting-room-devices', `${SOL}/video-conferencing`],
-  ['/wps', `${SOL}/video-conferencing`],
-  ['/clearone', `${SOL}/video-conferencing`],
-  ['/poly', `${SOL}/video-conferencing`],
-  ['/zoom', `${SOL}/video-conferencing`],
-  ['/lifesize', `${SOL}/video-conferencing`],
-  ['/boardroom', `${SOL}/boardrooms`],
-  ['/automation', `${SOL}/control-automation`],
-  ['/digital-signage', `${SOL}/digital-signage`],
-  ['/video-wall-solutions', `${SOL}/led-video-walls`],
-  ['/hello-world', '/'],
-  ['/category/uncategorized', '/'],
-  ['/wp-sitemap.xml', '/sitemap.xml'],
-];
-
-const securityHeaders = [
-  { key: 'X-Content-Type-Options', value: 'nosniff' },
-  { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
-  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-  {
-    key: 'Permissions-Policy',
-    value: 'camera=(), microphone=(), geolocation=()',
-  },
-];
-
-const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === 'production';
+const branch = process.env.WORKERS_CI_BRANCH || process.env.CF_PAGES_BRANCH;
+const siteEnv =
+  process.env.NEXT_PUBLIC_SITE_ENV ||
+  (branch ? (branch === 'main' ? 'production' : 'preview') : 'development');
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (siteEnv === 'production'
+    ? 'https://www.saanpro.com'
+    : 'http://localhost:3000');
 
 const nextConfig: NextConfig = {
+  output: 'export',
   reactStrictMode: true,
   poweredByHeader: false,
+  env: {
+    NEXT_PUBLIC_SITE_ENV: siteEnv,
+    NEXT_PUBLIC_SITE_URL: siteUrl,
+  },
   images: {
-    formats: ['image/avif', 'image/webp'],
-    deviceSizes: [480, 768, 1080, 1440, 1920, 2560],
-    imageSizes: [96, 160, 256, 384, 640],
-  },
-  async headers() {
-    return [
-      {
-        source: '/:path*',
-        headers: isProduction
-          ? securityHeaders
-          : [...securityHeaders, { key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
-      },
-    ];
-  },
-  async redirects() {
-    return legacyRedirects.map(([source, destination]) => ({
-      source,
-      destination,
-      permanent: true,
-    }));
+    loader: 'custom',
+    loaderFile: './src/lib/image-loader.ts',
+    deviceSizes: imageSizes.deviceSizes,
+    imageSizes: imageSizes.imageSizes,
   },
 };
 

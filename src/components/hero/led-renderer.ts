@@ -10,6 +10,8 @@
  * Raw WebGL1: one quad per cabinet with a true perspective transform.
  */
 
+import imageLoader from '@/lib/image-loader';
+
 const VERT = `
 attribute vec2 aPos;
 uniform vec2 uRes;
@@ -302,9 +304,9 @@ export class LedRenderer {
   }
 
   private optimisedUrl(src: string) {
+    // Both widths are in image-sizes.json, so the pre-resized file exists.
     const w = this.canvas.clientWidth * this.dpr > 1300 ? 1920 : 1080;
-    // Width and quality must match next.config images settings, or the optimiser returns 400.
-    return `/_next/image?url=${encodeURIComponent(src)}&w=${w}&q=75`;
+    return imageLoader({ src, width: w });
   }
 
   /** Begins a change to scene `i`. Animate `progress` from 0 to 1, then call `commit`. */

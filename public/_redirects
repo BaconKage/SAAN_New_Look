@@ -1,0 +1,53 @@
+# Legacy WordPress URLs from the old saanpro.com, mapped onto the new site so
+# existing links and search rankings carry over. Read by Cloudflare at the edge.
+# WordPress linked pages with a trailing slash, so both forms are listed.
+
+/about-us                 /about                            301
+/about-us/                /about                            301
+/contact-us               /contact                          301
+/contact-us/              /contact                          301
+/awards                   /about#recognition                301
+/awards/                  /about#recognition                301
+/audio-systems            /solutions/professional-audio     301
+/audio-systems/           /solutions/professional-audio     301
+/av-accessories           /products                         301
+/av-accessories/          /products                         301
+/av-mounting-kits         /products                         301
+/av-mounting-kits/        /products                         301
+/displays                 /products                         301
+/displays/                /products                         301
+/projector                /products                         301
+/projector/               /products                         301
+/screen                   /products                         301
+/screen/                  /products                         301
+/video-conferences        /solutions/video-conferencing     301
+/video-conferences/       /solutions/video-conferencing     301
+/vc-solutions             /solutions/video-conferencing     301
+/vc-solutions/            /solutions/video-conferencing     301
+/cloud-vc                 /solutions/video-conferencing     301
+/cloud-vc/                /solutions/video-conferencing     301
+/meeting-room-devices     /solutions/video-conferencing     301
+/meeting-room-devices/    /solutions/video-conferencing     301
+/wps                      /solutions/video-conferencing     301
+/wps/                     /solutions/video-conferencing     301
+/clearone                 /solutions/video-conferencing     301
+/clearone/                /solutions/video-conferencing     301
+/poly                     /solutions/video-conferencing     301
+/poly/                    /solutions/video-conferencing     301
+/zoom                     /solutions/video-conferencing     301
+/zoom/                    /solutions/video-conferencing     301
+/lifesize                 /solutions/video-conferencing     301
+/lifesize/                /solutions/video-conferencing     301
+/boardroom                /solutions/boardrooms             301
+/boardroom/               /solutions/boardrooms             301
+/automation               /solutions/control-automation     301
+/automation/              /solutions/control-automation     301
+/digital-signage          /solutions/digital-signage        301
+/digital-signage/         /solutions/digital-signage        301
+/video-wall-solutions     /solutions/led-video-walls        301
+/video-wall-solutions/    /solutions/led-video-walls        301
+/hello-world              /                                 301
+/hello-world/             /                                 301
+/category/uncategorized   /                                 301
+/category/uncategorized/  /                                 301
+/wp-sitemap.xml           /sitemap.xml                      301

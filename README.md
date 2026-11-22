@@ -4,7 +4,7 @@ Corporate website for SAAN Protocol Experts Private Limited (Bengaluru): enterpr
 
 ## Stack
 
-- Next.js 16 (App Router, fully static output) and React 19
+- Next.js 16 (App Router, static export to `out/`) and React 19, hosted on Cloudflare Workers static assets (free plan)
 - Tailwind CSS 4 (design tokens in `src/app/globals.css`)
 - GSAP + ScrollTrigger for scroll choreography, Lenis for smooth scrolling
 - Raw WebGL (no library) for the LED-wall hero, `src/components/hero/led-renderer.ts`
@@ -16,7 +16,18 @@ Corporate website for SAAN Protocol Experts Private Limited (Bengaluru): enterpr
 npm install
 npm run dev      # http://localhost:3000
 npm run verify   # lint, typecheck and production build
+npm run preview  # serve the built out/ with Cloudflare's local runtime, http://localhost:8787
 ```
+
+## Hosting (Cloudflare)
+
+The site is plain static files, so there is no server to run or patch.
+
+- `npm run build` runs `next build` (writes `out/`), then `scripts/optimize-images.mjs`, which pre-resizes every JPG/PNG to WebP at the widths in `src/lib/image-sizes.json`. `src/lib/image-loader.ts` points `next/image` at those files.
+- `wrangler.jsonc` tells Cloudflare to serve `out/`. Cloudflare's Git integration builds every push: `main` deploys to production, other branches get preview URLs.
+- `public/_redirects` holds the legacy WordPress redirects and `public/_headers` the security and cache headers. Cloudflare applies both at the edge.
+- Production builds are detected from Cloudflare's branch variable, so `main` is indexable with `https://www.saanpro.com` as the canonical URL and every other build is `noindex`. `NEXT_PUBLIC_SITE_ENV` and `NEXT_PUBLIC_SITE_URL` override this.
+- `scripts/fix-windows-export.mjs` corrects a Next.js export bug that only affects builds made on Windows.
 
 ## Where things live
 
@@ -47,5 +58,4 @@ All motion respects `prefers-reduced-motion`, and content is readable without Ja
 - Confirm `varda@saanpro.com` should be the public enquiry address.
 - Replace the type-set wordmark in `src/components/brand/logo.tsx` with the master SAAN vector logo if one exists.
 - Product photos are manufacturer images; check each OEM's reseller media terms. See `docs/IMAGE_CREDITS.md`.
-- Set `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_SITE_ENV=production` on the production host (otherwise pages send `noindex`).
-- Legacy saanpro.com URLs are redirected in `next.config.ts` (that file is authoritative; the older plans in `docs/` predate this rebuild and use earlier page slugs).
+- Legacy saanpro.com URLs are redirected in `public/_redirects` (that file is authoritative; the older plans in `docs/` predate this rebuild and use earlier page slugs).
