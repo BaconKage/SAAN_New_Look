@@ -19,7 +19,7 @@ const siteEnv =
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
   (siteEnv === 'production'
-    ? 'https://www.saanpro.com'
+    ? 'https://saanpro.com'
     : 'http://localhost:3000');
 
 const nextConfig: NextConfig = {

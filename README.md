@@ -26,7 +26,7 @@ The site is plain static files, so there is no server to run or patch.
 - `npm run build` runs `next build` (writes `out/`), then `scripts/optimize-images.mjs`, which pre-resizes every JPG/PNG to WebP at the widths in `src/lib/image-sizes.json`. `src/lib/image-loader.ts` points `next/image` at those files.
 - `wrangler.jsonc` tells Cloudflare to serve `out/`. Cloudflare's Git integration builds every push: `main` deploys to production, other branches get preview URLs.
 - `public/_redirects` holds the legacy WordPress redirects and `public/_headers` the security and cache headers. Cloudflare applies both at the edge.
-- Production builds are detected from Cloudflare's branch variable, so `main` is indexable with `https://www.saanpro.com` as the canonical URL and every other build is `noindex`. `NEXT_PUBLIC_SITE_ENV` and `NEXT_PUBLIC_SITE_URL` override this.
+- Production builds are detected from Cloudflare's branch variable, so `main` is indexable with `https://saanpro.com` as the canonical URL (`www` redirects to it with a Cloudflare redirect rule) and every other build is `noindex`. `NEXT_PUBLIC_SITE_ENV` and `NEXT_PUBLIC_SITE_URL` override this.
 - `scripts/fix-windows-export.mjs` corrects a Next.js export bug that only affects builds made on Windows.
 
 ## Where things live
